@@ -1,35 +1,45 @@
 package com.nzefler.auth.security;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-    private String jwtSecret;
-    private long jwtExpirationDate;
 
-    public String generateToken(Authentication authentication){
-        String userName = authentication.name();
-        Date cureentDate = new Date();
-        Date expirationDate = new Date(cureentDate.getTime() + jwtExpirationDate);
-        String token = Jwts.builder().subject(userName).issuedAt(new Date()).expiration(expirationDate).signWith(key()).compact();
-        return token;
+    @Value("${app.jwt-secret}")
+    private String jwtSecret;
+
+
+    public String generateToken(String email){
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .signWith(SignatureAlgorithm.HS256, jwtSecret)
+                .compact();
+   }
+
+    public String generateToken(Authentication authentication) {
+        String email = authentication.getName();
+        return generateToken(email);
     }
-    private Key key(){
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
-    }
-    public String getUserName(String token){
-        return Jwts.parser().verifyWith((SecretKey) key()).build().parseSignedclaims(token).getPayload().getSubject();
-    }
-    public boolean validateToken(String token){
-        Jwts.parser().verifyWith((SecretKey) key()).build().parse(token);
-        return true;
-    }
+
+   public String extractEmail(String token){
+        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token)
+                .getBody().getSubject();
+   }
+
+   public boolean validateToken(String token){
+       try{
+           Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+           return true;
+       }catch(Exception e){
+           return false;
+       }
+   }
 }

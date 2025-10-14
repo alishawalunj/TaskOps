@@ -16,7 +16,8 @@ public class User {
     private String userName;
     private String email;
     private String password;
-    private String provider;
+    @Enumerated(EnumType.STRING)
+    private OAuthProvider provider;
     private String address;
     private int age;
     private String sex;
@@ -53,11 +54,11 @@ public class User {
         this.password = password;
     }
 
-    public String getProvider() {
+    public OAuthProvider getProvider() {
         return provider;
     }
 
-    public void setProvider(String provider) {
+    public void setProvider(OAuthProvider provider) {
         this.provider = provider;
     }
 

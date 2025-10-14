@@ -7,29 +7,31 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-    public User toEntity(UserDTO userDto){
-        User user = new User();
-        user.setId(userDto.getId());
-        user.setUserName(userDto.getUserName());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
-        user.setAddress(userDto.getAddress());
-        user.setProvider(userDto.getProvider());
-        user.setAge(userDto.getAge());
-        user.setSex(userDto.getSex());
-        return user;
+    public User toEntity(UserDTO dto){
+        if(dto == null) return null;
+        User u = new User();
+        u.setId(dto.getId());
+        u.setUserName(dto.getUserName());
+        u.setEmail(dto.getEmail());
+        u.setPassword(dto.getPassword());
+        u.setProvider(dto.getProvider());
+        u.setAddress(dto.getAddress());
+        u.setAge(dto.getAge());
+        u.setSex(dto.getSex());
+        return u;
     }
 
-    public UserDTO toDTO(User user){
-        UserDTO userDto = new UserDTO();
-        userDto.setId(user.getId());
-        userDto.setUserName(user.getUserName());
-        userDto.setEmail(user.getEmail());
-        userDto.setPassword(user.getPassword());
-        userDto.setAddress(user.getAddress());
-        userDto.setProvider(user.getProvider());
-        userDto.setAge(user.getAge());
-        userDto.setSex(user.getSex());
-        return userDto;
+    public UserDTO toDTO(User u){
+        if(u == null) return null;
+        UserDTO dto = new UserDTO();
+        dto.setId(u.getId());
+        dto.setUserName(u.getUserName());
+        dto.setEmail(u.getEmail());
+        dto.setPassword(null);
+        dto.setProvider(u.getProvider());
+        dto.setAddress(u.getAddress());
+        dto.setAge(u.getAge());
+        dto.setSex(u.getSex());
+        return dto;
     }
 }
