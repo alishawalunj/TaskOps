@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from "react";
 import { IoIosCheckmarkCircle } from "react-icons/io";
+import { RxCrossCircled } from "react-icons/rx";
 
 type Task = {
     title: string;
@@ -19,9 +20,9 @@ export default function TaskCircle(task: Task) {
                 {isCompleted ? 
                     <IoIosCheckmarkCircle className="w-6 h-6 mr-2 text-black"/> 
                     : 
-                    <span className="w-6 h-6 mr-2 border-2 border-green-400 rounded-full flex items-center justify-center text-green-400">X</span>
+                    <RxCrossCircled className="w-6 h-6 mr-2 text-green "/>
                 }
-                {isCompleted ? 'Completed' : 'To do'}
+                {isCompleted ? 'Completed' : 'Pending'}
             </p>
         </div>
         </>
