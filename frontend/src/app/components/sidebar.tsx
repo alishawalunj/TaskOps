@@ -23,7 +23,7 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
         </h2>
 
         <ul>
-            <li className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">Dashboard</li>
+            <li onClick={() => handleNavigation("/dashboard")} className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">Dashboard</li>
             <li onClick={() => handleNavigation("/profile")} className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">Profile</li>
             <li onClick={() => handleNavigation("/visualization")} className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">Visualization</li>
             <li onClick={() => handleNavigation("/history")} className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">History</li>
