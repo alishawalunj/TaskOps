@@ -1,0 +1,39 @@
+scalar Date
+
+input Task {
+    taskId : ID!
+    userId : Float!
+    name : String!
+    description : String!
+    status : String!
+    duration : Float!
+    date : Date!
+    createdAt : Date!
+    updatedAt : Date!
+}
+
+type TaskDTO {
+    taskId : ID!
+    userId : Float!
+    name : String!
+    description : String!
+    status : String!
+    duration : Float!
+    date : Date!
+    createdAt : Date!
+    updatedAt : Date!
+}
+
+type Query {
+    getAllTasks : [TaskDTO!]!
+    getTaskById(taskId : ID) : TaskDTO!
+    getAllPreviousTasks(userId : Float) : [TaskDTO!]!
+    getAllUpcomingTasks(userId : Float) : [TaskDTO!]!
+    getAllCurrentTasks(userId : Float) : [TaskDTO!]!
+}
+
+type Mutation {
+    createTask(task : Task!) : TaskDTO!
+    updateTask(task : Task!) : TaskDTO!
+    deleteTask(taskId : ID!) : Boolean!
+}
