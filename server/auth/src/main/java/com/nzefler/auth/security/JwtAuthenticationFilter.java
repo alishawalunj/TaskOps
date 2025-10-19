@@ -1,6 +1,5 @@
 package com.nzefler.auth.security;
 
-import com.nzefler.auth.service.AuthService;
 import com.nzefler.auth.service.AuthServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
