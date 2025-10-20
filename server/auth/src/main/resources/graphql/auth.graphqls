@@ -1,7 +1,19 @@
+input User {
+    id: ID
+    userName: String
+    email: String
+    password: String
+    provider: String
+    address: String
+    age: Int
+    sex: String
+}
+
 type UserDTO {
     id: ID
     userName: String
     email: String
+    password: String
     provider: String
     address: String
     age: Int
@@ -18,16 +30,7 @@ input LoginDTO {
     password: String!
 }
 
-input UserInput {
-    userName: String!
-    email: String!
-    password: String!
-    address: String
-    age: Int
-    sex: String
-}
-
 type Mutation {
-    registerUser(user: UserInput!): UserDTO
-    loginUser(credentials: LoginDTO!): JwtAuthResponse
+    registerUser(user: User!): UserDTO!
+    loginUser(credentials: LoginDTO!): JwtAuthResponse!
 }

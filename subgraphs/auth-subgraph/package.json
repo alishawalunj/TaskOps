@@ -1,0 +1,17 @@
+{
+  "name": "auth-subgraph",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@apollo/gateway": "^2.11.3",
+    "@apollo/server": "^5.0.0",
+    "graphql": "^16.11.0"
+  }
+}
