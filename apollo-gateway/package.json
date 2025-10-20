@@ -1,0 +1,17 @@
+{
+  "name": "apollo-gateway",
+  "version": "1.0.0",
+  "description": "Apollo federation gateway",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/gateway": "^2.11.3",
+    "@apollo/server": "^5.0.0",
+    "graphql": "^16.11.0"
+  }
+}
