@@ -21,7 +21,6 @@ public class OAuth2AuthenticationFailureHandler implements AuthenticationFailure
                                         HttpServletResponse response,
                                         AuthenticationException exception)
             throws IOException, ServletException {
-        log.error("OAuth2 Authentication failed: {}", exception.getMessage());
         String errorMessage = URLEncoder.encode(exception.getMessage(), StandardCharsets.UTF_8);
         response.sendRedirect("/login?error=" + errorMessage);
     }

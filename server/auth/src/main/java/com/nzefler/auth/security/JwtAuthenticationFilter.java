@@ -1,6 +1,6 @@
 package com.nzefler.auth.security;
 
-import com.nzefler.auth.service.AuthServiceImpl;
+import com.nzefler.auth.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.IOException;
 
@@ -17,32 +18,45 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthServiceImpl authService;
+    private final CustomUserDetailsService customUserDetailsService;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, AuthServiceImpl authService) {
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, CustomUserDetailsService customUserDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.authService = authService;
+        this.customUserDetailsService = customUserDetailsService;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
-        String userEmail = null;
-        String jwtToken;
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
 
-        if(authHeader != null && authHeader.startsWith("Bearer ")){
-            jwtToken = authHeader.substring(7);
-            userEmail = jwtTokenProvider.extractEmail(jwtToken);
+        String authHeader = request.getHeader("Authorization");
+        String path = request.getServletPath();
+
+        if ("/graphql".equals(path) && "POST".equalsIgnoreCase(request.getMethod())) {
+            filterChain.doFilter(request, response);
+            return;
         }
-        if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            if(jwtTokenProvider.validateToken(authHeader.substring(7))){
-                var userDetails = authService.loadUserByUsername(userEmail);
 
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String jwtToken = authHeader.substring(7);
+            String userEmail = jwtTokenProvider.extractEmail(jwtToken);
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                if (jwtTokenProvider.validateToken(jwtToken)) {
+                    var userDetails = customUserDetailsService.loadUserByUsername(userEmail);
+                    var authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
             }
         }
+
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isLoginOrRegisterMutation(HttpServletRequest request) throws IOException {
+        String body = new String(((ContentCachingRequestWrapper) request).getContentAsByteArray());
+        return body.contains("loginUser") || body.contains("registerUser");
     }
 }

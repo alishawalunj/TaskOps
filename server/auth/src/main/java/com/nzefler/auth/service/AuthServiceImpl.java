@@ -9,29 +9,24 @@ import com.nzefler.auth.mapper.UserMapper;
 import com.nzefler.auth.repository.UserRepository;
 import com.nzefler.auth.security.JwtTokenProvider;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-
 @Service
-public class AuthServiceImpl implements AuthService, UserDetailsService {
+public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationManager authenticationManager;
 
-    public AuthServiceImpl(UserRepository userRepository, UserMapper mapper, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager) {
+    public AuthServiceImpl(UserRepository userRepository, UserMapper mapper, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
         this.userRepository = userRepository;
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.authenticationManager = authenticationManager;
     }
 
     @Override
@@ -47,25 +42,12 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     }
 
     @Override
-    public JwtAuthResponse login(LoginDTO loginDTO) {
-        User user = userRepository.findByEmail(loginDTO.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("Invalid email or password"));
-//        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
-//            throw new RuntimeException("Invalid email or password");
-//        }
-        String accessToken = jwtTokenProvider.generateToken(loginDTO.getEmail());
+    public JwtAuthResponse login(LoginDTO loginDTO, AuthenticationManager authenticationManager) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
+        );
+        String accessToken = jwtTokenProvider.generateToken(authentication);
         return new JwtAuthResponse(accessToken);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                Collections.emptyList()
-        );
-    }
 }

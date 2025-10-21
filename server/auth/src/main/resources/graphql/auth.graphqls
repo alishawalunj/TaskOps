@@ -1,8 +1,22 @@
-input User {
-    id: ID
-    userName: String
-    email: String
-    password: String
+input UserInput {
+    userName: String!
+    email: String!
+    password: String!
+    provider: String
+    address: String
+    age: Int
+    sex: String
+}
+
+input LoginDTO {
+    email: String!
+    password: String!
+}
+
+type User {
+    id: ID!
+    userName: String!
+    email: String!
     provider: String
     address: String
     age: Int
@@ -25,12 +39,18 @@ type JwtAuthResponse {
     tokenType: String
 }
 
-input LoginDTO {
-    email: String!
-    password: String!
+type Query {
+    getUserById(id: ID!): UserDTO
+    getAllUsers: [UserDTO!]!
 }
 
 type Mutation {
-    registerUser(user: User!): UserDTO!
+    # Auth mutations
+    registerUser(user: UserInput!): UserDTO!
     loginUser(credentials: LoginDTO!): JwtAuthResponse!
+
+    # User management mutations
+    createUser(user: UserInput!): UserDTO!
+    updateUser(user: UserInput!): UserDTO!
+    deleteUser(id: ID!): Boolean!
 }

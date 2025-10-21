@@ -12,10 +12,13 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+
+    public OAuth2UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) {
