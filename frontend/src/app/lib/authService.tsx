@@ -1,9 +1,11 @@
 
 export interface User {
-  name: string;
-  username: string;
-  email: string;
-  password: string;
+    username: string;
+    email: string;
+    password: string;
+    address?: string;
+    age?: string;
+    sex?: string;
 }
 
 export function registerUser(data: User): void {

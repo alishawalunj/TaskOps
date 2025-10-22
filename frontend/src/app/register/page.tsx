@@ -6,11 +6,14 @@ import { registerUser } from "../lib/authService";
 export default function Register(){
     const router = useRouter();
     const [ form , setForm ] = useState({
-        name:'',
         username:'',
         email:'',
         password:'',
-        passwordConfirm:''
+        passwordConfirm:'',
+        address:'',
+        age : '',
+        sex : ''
+
     });
     const [ error, setError ] = useState('');
     const [ loading, setLoading ] = useState(false);
@@ -30,11 +33,13 @@ export default function Register(){
 
         try {
             setLoading(true);
-            await registerUser({
-                name: form.name,
+            registerUser({
                 username: form.username,
                 email: form.email,
-                password: form.password
+                password: form.password,
+                address: form.address,
+                age: form.age,
+                sex: form.sex
             });
             setLoading(false);
             alert('Registration Successful, Please login to continue');
@@ -47,19 +52,10 @@ export default function Register(){
 
     return (
        <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="w-180 h-180 p-8 rounded-2xl border-2 border-green-400 flex flex-col items-center mt-10">
+        <div className="w-180 p-8 rounded-2xl border-2 border-green-400 flex flex-col items-center mt-10">
             <h1 className="text-6xl font-bold text-green-400 mb-20">Register</h1>
             <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-80">
                 {error && <p className="text-red-500">{error}</p>}
-                <input 
-                    type="text" 
-                    name="name" 
-                    placeholder="Name" 
-                    value={form.name} 
-                    onChange={handleChange} 
-                    required 
-                    className="bg-transparent border border-green-500 text-green-100 p-2 mt-10 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
-                />
                 <input 
                     type="text" 
                     name="username" 
@@ -67,7 +63,7 @@ export default function Register(){
                     value={form.username} 
                     onChange={handleChange} 
                     required 
-                    className="bg-transparent border border-green-500 text-green-100 p-2 mt-5 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+                    className="bg-transparent border border-green-500 text-green-100 p-2 mt-2 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
                 />
                 <input 
                     type="email" 
@@ -76,7 +72,7 @@ export default function Register(){
                     value={form.email} 
                     onChange={handleChange} 
                     required 
-                    className="bg-transparent border border-green-500 text-green-100 p-2 mt-5 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+                    className="bg-transparent border border-green-500 text-green-100 p-2 mt-2 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
                 />
                 <input 
                     type="password" 
@@ -85,7 +81,7 @@ export default function Register(){
                     value={form.password} 
                     onChange={handleChange} 
                     required 
-                    className="bg-transparent border border-green-500 text-green-100 p-2 mt-5 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+                    className="bg-transparent border border-green-500 text-green-100 p-2 mt-2 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
                 />
                 <input 
                     type="password" 
@@ -94,7 +90,34 @@ export default function Register(){
                     value={form.passwordConfirm} 
                     onChange={handleChange} 
                     required 
-                    className="bg-transparent border border-green-500 text-green-100 p-2 mt-5 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+                    className="bg-transparent border border-green-500 text-green-100 p-2 mt-2 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+                />
+                <input 
+                    type="text" 
+                    name="address" 
+                    placeholder="Address" 
+                    value={form.address} 
+                    onChange={handleChange} 
+                    required 
+                    className="bg-transparent border border-green-500 text-green-100 p-2 mt-2 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+                />
+                <input 
+                    type="number" 
+                    name="age" 
+                    placeholder="Age" 
+                    value={form.age} 
+                    onChange={handleChange} 
+                    required 
+                    className="bg-transparent border border-green-500 text-green-100 p-2 mt-2 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+                />
+                <input 
+                    type="text" 
+                    name="sex" 
+                    placeholder="Sex" 
+                    value={form.sex} 
+                    onChange={handleChange} 
+                    required 
+                    className="bg-transparent border border-green-500 text-green-100 p-2 mt-2 rounded focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
                 />
                 <button 
                     type="submit" 
