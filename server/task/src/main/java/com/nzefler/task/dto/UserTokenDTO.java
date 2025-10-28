@@ -1,0 +1,21 @@
+package com.nzefler.task.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+public class UserTokenDTO {
+    private Long id;
+    private String email;
+
+    public UserTokenDTO(Long id, String email) {
+        this.id = id;
+        this.email = email;
+    }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+}

@@ -1,7 +1,20 @@
-input UserInput {
+# --- INPUT TYPES ---
+
+input NewUserDTO {
     userName: String!
     email: String!
     password: String!
+    provider: String
+    address: String
+    age: Int
+    sex: String
+}
+
+input UserRequestDTO {
+    id: ID!
+    userName: String
+    email: String
+    password: String
     provider: String
     address: String
     age: Int
@@ -13,7 +26,9 @@ input LoginDTO {
     password: String!
 }
 
-type User {
+# --- OUTPUT TYPES ---
+
+type UserResponseDTO {
     id: ID!
     userName: String!
     email: String!
@@ -23,34 +38,26 @@ type User {
     sex: String
 }
 
-type UserDTO {
-    id: ID
-    userName: String
-    email: String
-    password: String
-    provider: String
-    address: String
-    age: Int
-    sex: String
+type JwtAuthResponseDTO {
+    accessToken: String!
+    id: ID!
 }
 
-type JwtAuthResponse {
-    accessToken: String
-    tokenType: String
-}
+# --- QUERIES ---
 
 type Query {
-    getUserById(id: ID!): UserDTO
-    getAllUsers: [UserDTO!]!
+    me: UserResponseDTO
+    getUserById(id: ID!): UserResponseDTO
+    getAllUsers: [UserResponseDTO!]!
 }
 
-type Mutation {
-    # Auth mutations
-    registerUser(user: UserInput!): UserDTO!
-    loginUser(credentials: LoginDTO!): JwtAuthResponse!
+# --- MUTATIONS ---
 
-    # User management mutations
-    createUser(user: UserInput!): UserDTO!
-    updateUser(user: UserInput!): UserDTO!
+type Mutation {
+    registerUser(user: NewUserDTO!): UserResponseDTO!
+    loginUser(credentials: LoginDTO!): JwtAuthResponseDTO!
+
+    createUser(user: NewUserDTO!): UserResponseDTO!
+    updateUser(user: UserRequestDTO!): UserResponseDTO!
     deleteUser(id: ID!): Boolean!
 }

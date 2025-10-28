@@ -1,39 +1,56 @@
 scalar Date
-
-input Task {
-    taskId : ID!
-    userId : Float!
-    name : String!
-    description : String!
-    status : String!
-    duration : Float!
-    date : Date!
-    createdAt : Date!
-    updatedAt : Date!
+# --- INPUT TYPES ---
+input TaskRequestDTO {
+    taskId: ID
+    userId: ID!
+    name: String!
+    description: String!
+    status: String!
+    duration: Int!
+    date: Date!
+    createdAt: Date
+    updatedAt: Date
 }
 
-type TaskDTO {
-    taskId : ID!
-    userId : Float!
-    name : String!
-    description : String!
-    status : String!
-    duration : Float!
-    date : Date!
-    createdAt : Date!
-    updatedAt : Date!
+input NewTaskDTO {
+    userId: ID!
+    name: String!
+    description: String!
+    status: String!
+    duration: Int!
+    date: Date!
+    createdAt: Date
+    updatedAt: Date
 }
+
+# --- OUTPUT TYPES ---
+
+type TaskResponseDTO {
+    taskId: ID!
+    userId: ID!
+    name: String!
+    description: String!
+    status: String!
+    duration: Int!
+    date: Date!
+    createdAt: Date!
+    updatedAt: Date!
+}
+
+# --- QUERIES ---
 
 type Query {
-    getAllTasks : [TaskDTO!]!
-    getTaskById(taskId : ID) : TaskDTO!
-    getAllPreviousTasks(userId : Float) : [TaskDTO!]!
-    getAllUpcomingTasks(userId : Float) : [TaskDTO!]!
-    getAllCurrentTasks(userId : Float) : [TaskDTO!]!
+    getAllTasks: [TaskResponseDTO!]!
+    getTaskById(taskId: ID!): TaskResponseDTO
+    getAllPreviousTasks(userId: ID!): [TaskResponseDTO!]!
+    getAllUpcomingTasks(userId: ID!): [TaskResponseDTO!]!
+    getAllCurrentTasks(userId: ID!): [TaskResponseDTO!]!
 }
 
+# --- MUTATIONS ---
+
 type Mutation {
-    createTask(task : Task!) : TaskDTO!
-    updateTask(task : Task!) : TaskDTO!
-    deleteTask(taskId : ID!) : Boolean!
+    createTask(task: NewTaskDTO!): TaskResponseDTO!
+    updateTask(task: TaskRequestDTO!): TaskResponseDTO!
+    deleteTask(taskId: ID!): Boolean!
 }

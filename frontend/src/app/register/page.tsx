@@ -1,10 +1,11 @@
 'use client';
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { registerUser } from "../lib/authService";
+import { useUsers } from "../hooks/useUsers";
 
 export default function Register(){
     const router = useRouter();
+    const { createUser } = useUsers();
     const [ form , setForm ] = useState({
         username:'',
         email:'',
@@ -33,12 +34,13 @@ export default function Register(){
 
         try {
             setLoading(true);
-            registerUser({
-                username: form.username,
+            await createUser?.({
+                userName: form.username,
                 email: form.email,
                 password: form.password,
                 address: form.address,
-                age: form.age,
+                provider: 'LOCAL',
+                age: form.age ? Number(form.age) : undefined,
                 sex: form.sex
             });
             setLoading(false);

@@ -1,8 +1,6 @@
 package com.nzefler.auth.service;
 
-import com.nzefler.auth.dto.JwtAuthResponse;
-import com.nzefler.auth.dto.LoginDTO;
-import com.nzefler.auth.dto.UserDTO;
+import com.nzefler.auth.dto.*;
 import com.nzefler.auth.entity.OAuthProvider;
 import com.nzefler.auth.entity.User;
 import com.nzefler.auth.mapper.UserMapper;
@@ -30,24 +28,29 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserDTO register(UserDTO userDTO) {
-        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
-            throw new RuntimeException("User already exists with email: " + userDTO.getEmail());
+    public UserResponseDTO register(NewUserDTO newUserDTO) {
+        if (userRepository.findByEmail(newUserDTO.getEmail()).isPresent()) {
+            throw new RuntimeException("User already exists with email: " + newUserDTO.getEmail());
         }
-        User user = mapper.toEntity(userDTO);
+        User user = mapper.toEntity(newUserDTO);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setProvider(userDTO.getProvider() == null ? OAuthProvider.LOCAL : userDTO.getProvider());
+        user.setProvider(newUserDTO.getProvider() == null ? OAuthProvider.LOCAL : newUserDTO.getProvider());
         User savedUser = userRepository.save(user);
         return mapper.toDTO(savedUser);
     }
 
     @Override
-    public JwtAuthResponse login(LoginDTO loginDTO, AuthenticationManager authenticationManager) {
+    public JwtAuthResponseDTO login(LoginDTO loginDTO, AuthenticationManager authenticationManager) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
         );
-        String accessToken = jwtTokenProvider.generateToken(authentication);
-        return new JwtAuthResponse(accessToken);
+
+        User user = userRepository.findByEmail(loginDTO.getEmail()).orElseThrow(() -> new RuntimeException("User not found after authentication"));
+        Long id = user.getId();
+        String accessToken = jwtTokenProvider.generateToken(authentication, user.getId());
+        System.out.println("In Authservice while logging in "+ accessToken);
+        return new JwtAuthResponseDTO(accessToken,id);
     }
+
 
 }

@@ -1,15 +1,17 @@
 package com.nzefler.auth.service;
 
-import com.nzefler.auth.dto.UserDTO;
-import com.nzefler.auth.entity.User;
+import com.nzefler.auth.dto.NewUserDTO;
+import com.nzefler.auth.dto.UserRequestDTO;
+import com.nzefler.auth.dto.UserResponseDTO;
 
 
 import java.util.List;
 
 public interface UserService {
-    UserDTO findUserById(Long id);
-    List<UserDTO> findAllUsers();
-    UserDTO saveUser(User user);
-    UserDTO updateUser(User user);
+    UserResponseDTO findUserById(Long id);
+    List<UserResponseDTO> findAllUsers();
+    UserResponseDTO saveUser(NewUserDTO newUserDTO);
+    UserResponseDTO updateUser(UserRequestDTO userRequestDTO);
     boolean deleteUser(Long id);
+    UserResponseDTO findUserByEmail(String email);
 }

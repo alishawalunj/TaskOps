@@ -1,6 +1,8 @@
 package com.nzefler.task.service;
 
-import com.nzefler.task.dto.TaskDTO;
+import com.nzefler.task.dto.NewTaskDTO;
+import com.nzefler.task.dto.TaskRequestDTO;
+import com.nzefler.task.dto.TaskResponseDTO;
 import com.nzefler.task.entity.Task;
 import com.nzefler.task.mapper.TaskMapper;
 import com.nzefler.task.repository.TaskRepository;
@@ -21,28 +23,37 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
-    public List<TaskDTO> findAllTasks() {
+    public List<TaskResponseDTO> findAllTasks() {
         return taskRepository.findAll().stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
-    public TaskDTO findTaskById(Long taskId) {
+    public TaskResponseDTO findTaskById(Long taskId) {
         return taskRepository.findById(taskId).map(mapper::toDTO).orElse(null);
     }
 
     @Override
-    public TaskDTO saveTask(Task task) {
-        return mapper.toDTO(taskRepository.save(task));
+    public TaskResponseDTO saveTask(NewTaskDTO newTaskDTO) {
+        try {
+            Task newTask = mapper.toEntity(newTaskDTO);
+            Task savedTask = taskRepository.save(newTask);
+            System.out.println("Task saved successfully");
+            return mapper.toDTO(savedTask);
+        } catch (Exception e) {
+            System.err.println("Error saving task: " + e.getMessage());
+            return null;
+        }
     }
 
+
     @Override
-    public TaskDTO updateTask(Task task) {
-        Task existingTask = taskRepository.findById(task.getTaskId()).orElseThrow(() -> new RuntimeException("Task does not exist"));
-        existingTask.setName(task.getName());
-        existingTask.setDescription(task.getDescription());
-        existingTask.setStatus(task.getStatus());
-        existingTask.setDuration(task.getDuration());
-        existingTask.setDate(task.getDate());
+    public TaskResponseDTO updateTask(TaskRequestDTO taskRequestDTO) {
+        Task existingTask = taskRepository.findById(taskRequestDTO.getTaskId()).orElseThrow(() -> new RuntimeException("Task does not exist"));
+        existingTask.setName(taskRequestDTO.getName());
+        existingTask.setDescription(taskRequestDTO.getDescription());
+        existingTask.setStatus(taskRequestDTO.getStatus());
+        existingTask.setDuration(taskRequestDTO.getDuration());
+        existingTask.setDate(taskRequestDTO.getDate());
         existingTask.setUpdatedAt(LocalDate.now());
         Task updatedTask = taskRepository.save(existingTask);
         return mapper.toDTO(updatedTask);
@@ -58,7 +69,7 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
-    public List<TaskDTO> findAllPreviousTasks(Long userId) {
+    public List<TaskResponseDTO> findAllPreviousTasks(Long userId) {
         List<Task> tasks = taskRepository.findByUserId(userId);
         if (tasks == null || tasks.isEmpty()) {
             return List.of();
@@ -69,7 +80,7 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
-    public List<TaskDTO> findAllUpcomingTasks(Long userId) {
+    public List<TaskResponseDTO> findAllUpcomingTasks(Long userId) {
         List<Task> tasks = taskRepository.findByUserId(userId);
         if (tasks == null || tasks.isEmpty()) {
             return List.of();
@@ -80,7 +91,7 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
-    public List<TaskDTO> findAllCurrentTasks(Long userId) {
+    public List<TaskResponseDTO> findAllCurrentTasks(Long userId) {
         List<Task> tasks = taskRepository.findByUserId(userId);
         if (tasks == null || tasks.isEmpty()) {
             return List.of();

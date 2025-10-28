@@ -1,13 +1,15 @@
 package com.nzefler.auth.mapper;
 
-import com.nzefler.auth.dto.UserDTO;
+import com.nzefler.auth.dto.NewUserDTO;
+import com.nzefler.auth.dto.UserRequestDTO;
+import com.nzefler.auth.dto.UserResponseDTO;
 import com.nzefler.auth.entity.User;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
 
-    public User toEntity(UserDTO dto){
+    public User toEntity(UserRequestDTO dto){
         if(dto == null) return null;
         User u = new User();
         u.setId(dto.getId());
@@ -21,17 +23,44 @@ public class UserMapper {
         return u;
     }
 
-    public UserDTO toDTO(User u){
+    public User toEntity(NewUserDTO newUserDTO){
+        if(newUserDTO == null) return null;
+        User u = new User();
+        u.setUserName(newUserDTO.getUserName());
+        u.setEmail(newUserDTO.getEmail());
+        u.setPassword(newUserDTO.getPassword());
+        u.setProvider(newUserDTO.getProvider());
+        u.setAddress(newUserDTO.getAddress());
+        u.setAge(newUserDTO.getAge());
+        u.setSex(newUserDTO.getSex());
+        return u;
+    }
+
+    public UserResponseDTO toDTO(UserRequestDTO userRequestDTO){
+        if(userRequestDTO == null) return null;
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        userResponseDTO.setId(userRequestDTO.getId());
+        userResponseDTO.setUserName(userRequestDTO.getUserName());
+        userResponseDTO.setEmail(userRequestDTO.getEmail());
+        userResponseDTO.setPassword(userRequestDTO.getPassword());
+        userResponseDTO.setProvider(userRequestDTO.getProvider());
+        userResponseDTO.setAddress(userRequestDTO.getAddress());
+        userResponseDTO.setAge(userRequestDTO.getAge());
+        userResponseDTO.setSex(userRequestDTO.getSex());
+        return userResponseDTO;
+    }
+
+    public UserResponseDTO toDTO(User u){
         if(u == null) return null;
-        UserDTO dto = new UserDTO();
-        dto.setId(u.getId());
-        dto.setUserName(u.getUserName());
-        dto.setEmail(u.getEmail());
-        dto.setPassword(u.getPassword());
-        dto.setProvider(u.getProvider());
-        dto.setAddress(u.getAddress());
-        dto.setAge(u.getAge());
-        dto.setSex(u.getSex());
-        return dto;
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        userResponseDTO.setId(u.getId());
+        userResponseDTO.setUserName(u.getUserName());
+        userResponseDTO.setEmail(u.getEmail());
+        userResponseDTO.setPassword(u.getPassword());
+        userResponseDTO.setProvider(u.getProvider());
+        userResponseDTO.setAddress(u.getAddress());
+        userResponseDTO.setAge(u.getAge());
+        userResponseDTO.setSex(u.getSex());
+        return userResponseDTO;
     }
 }

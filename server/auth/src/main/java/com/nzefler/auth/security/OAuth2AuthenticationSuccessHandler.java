@@ -23,7 +23,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
 
-        String token = jwtTokenProvider.generateToken(authentication);
-        response.sendRedirect("/?token=" + token);
+        String token = "asd"
+;        response.sendRedirect("/?token=" + token);
     }
 }

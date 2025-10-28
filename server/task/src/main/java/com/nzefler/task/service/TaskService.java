@@ -1,19 +1,20 @@
 package com.nzefler.task.service;
 
-import com.nzefler.task.dto.TaskDTO;
-import com.nzefler.task.entity.Task;
+import com.nzefler.task.dto.NewTaskDTO;
+import com.nzefler.task.dto.TaskRequestDTO;
+import com.nzefler.task.dto.TaskResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public interface TaskService {
-    List<TaskDTO> findAllTasks();
-    TaskDTO findTaskById(Long taskId);
-    TaskDTO saveTask(Task task);
-    TaskDTO updateTask(Task task);
+    List<TaskResponseDTO> findAllTasks();
+    TaskResponseDTO findTaskById(Long taskId);
+    TaskResponseDTO saveTask(NewTaskDTO newTaskDTO);
+    TaskResponseDTO updateTask(TaskRequestDTO taskRequestDTO);
     boolean deleteTask(Long taskId);
-    List<TaskDTO> findAllPreviousTasks(Long userId);
-    List<TaskDTO> findAllUpcomingTasks(Long userId);
-    List<TaskDTO> findAllCurrentTasks(Long userId);
+    List<TaskResponseDTO> findAllPreviousTasks(Long userId);
+    List<TaskResponseDTO> findAllUpcomingTasks(Long userId);
+    List<TaskResponseDTO> findAllCurrentTasks(Long userId);
 }

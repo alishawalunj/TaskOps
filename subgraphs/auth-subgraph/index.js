@@ -1,4 +1,3 @@
-// subgraphs/user-subgraph/index.js
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { buildSubgraphSchema } from "@apollo/subgraph";
@@ -8,19 +7,18 @@ import { request, gql as gqlRequest } from "graphql-request";
 const SPRING_USER_URL = "http://localhost:8081/graphql";
 
 const typeDefs = gql`
-  type User @key(fields: "id") {
-    id: ID!
-    userName: String
-    email: String
-    password: String
+  input NewUserDTO {
+    userName: String!
+    email: String!
+    password: String!
     provider: String
     address: String
     age: Int
     sex: String
   }
 
-  input UserInput {
-    id: ID
+input UserRequestDTO {
+    id: ID!
     userName: String
     email: String
     password: String
@@ -35,28 +33,38 @@ const typeDefs = gql`
     password: String!
   }
 
-  type JwtAuthResponse {
-    accessToken: String
-    tokenType: String
+  type UserResponseDTO @key(fields: "id") {
+    id: ID!
+    userName: String!
+    email: String!
+    provider: String
+    address: String
+    age: Int
+    sex: String
+  }
+
+  type JwtAuthResponseDTO {
+    accessToken: String!
+    id: ID!
   }
 
   type Query {
-    getUserById(id: ID!): User
-    getAllUsers: [User]
+    getUserById(id: ID!): UserResponseDTO
+    getAllUsers: [UserResponseDTO!]!
   }
 
   type Mutation {
-    registerUser(user: UserInput!): User
-    loginUser(credentials: LoginDTO!): JwtAuthResponse
-    createUser(user: UserInput!): User
-    updateUser(user: UserInput!): User
-    deleteUser(id: ID!): Boolean
+    registerUser(user: NewUserDTO!): UserResponseDTO!
+    loginUser(credentials: LoginDTO!): JwtAuthResponseDTO!
+    createUser(user: NewUserDTO!): UserResponseDTO!
+    updateUser(user: UserRequestDTO!): UserResponseDTO!
+    deleteUser(id: ID!): Boolean!
   }
 `;
 
 const resolvers = {
   Query: {
-    getUserById: async (_, { id }) => {
+    getUserById: async (_, { id }, context) => {
       const query = gqlRequest`
         query ($id: ID!) {
           getUserById(id: $id) {
@@ -71,10 +79,13 @@ const resolvers = {
           }
         }
       `;
-      const res = await request(SPRING_USER_URL, query, { id });
+      const res = await request(SPRING_USER_URL, query, { id }, {
+        Authorization: context.token || "",
+      });
       return res.getUserById;
     },
-    getAllUsers: async () => {
+
+    getAllUsers: async (_, __, context) => {
       const query = gqlRequest`
         {
           getAllUsers {
@@ -89,7 +100,9 @@ const resolvers = {
           }
         }
       `;
-      const res = await request(SPRING_USER_URL, query);
+      const res = await request(SPRING_USER_URL, query, {}, {
+        Authorization: context.token || "",
+      });
       return res.getAllUsers;
     },
   },
@@ -97,7 +110,7 @@ const resolvers = {
   Mutation: {
     registerUser: async (_, { user }) => {
       const mutation = gqlRequest`
-        mutation ($user: UserInput!) {
+        mutation ($user: NewUserDTO!) {
           registerUser(user: $user) {
             id
             userName
@@ -118,7 +131,7 @@ const resolvers = {
         mutation ($credentials: LoginDTO!) {
           loginUser(credentials: $credentials) {
             accessToken
-            tokenType
+            id
           }
         }
       `;
@@ -126,9 +139,9 @@ const resolvers = {
       return res.loginUser;
     },
 
-    createUser: async (_, { user }) => {
+    createUser: async (_, { user }, context) => {
       const mutation = gqlRequest`
-        mutation ($user: UserInput!) {
+        mutation ($user: NewUserDTO!) {
           createUser(user: $user) {
             id
             userName
@@ -140,13 +153,15 @@ const resolvers = {
           }
         }
       `;
-      const res = await request(SPRING_USER_URL, mutation, { user });
+      const res = await request(SPRING_USER_URL, mutation, { user }, {
+        Authorization: context.token || "",
+      });
       return res.createUser;
     },
 
-    updateUser: async (_, { user }) => {
+    updateUser: async (_, { user }, context) => {
       const mutation = gqlRequest`
-        mutation ($user: UserInput!) {
+        mutation ($user: UserRequestDTO!) {
           updateUser(user: $user) {
             id
             userName
@@ -158,17 +173,21 @@ const resolvers = {
           }
         }
       `;
-      const res = await request(SPRING_USER_URL, mutation, { user });
+      const res = await request(SPRING_USER_URL, mutation, { user }, {
+        Authorization: context.token || "",
+      });
       return res.updateUser;
     },
 
-    deleteUser: async (_, { id }) => {
+    deleteUser: async (_, { id }, context) => {
       const mutation = gqlRequest`
         mutation ($id: ID!) {
           deleteUser(id: $id)
         }
       `;
-      const res = await request(SPRING_USER_URL, mutation, { id });
+      const res = await request(SPRING_USER_URL, mutation, { id }, {
+        Authorization: context.token || "",
+      });
       return res.deleteUser;
     },
   },
@@ -176,6 +195,10 @@ const resolvers = {
 
 const server = new ApolloServer({
   schema: buildSubgraphSchema([{ typeDefs, resolvers }]),
+  context: ({ req }) => {
+    const token = req.headers.authorization || "";
+    return { token };
+  },
 });
 
 startStandaloneServer(server, { listen: { port: 4001 } }).then(({ url }) => {

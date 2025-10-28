@@ -1,12 +1,10 @@
 package com.nzefler.auth.service;
-import com.nzefler.auth.dto.JwtAuthResponse;
-import com.nzefler.auth.dto.LoginDTO;
-import com.nzefler.auth.dto.UserDTO;
+import com.nzefler.auth.dto.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface AuthService {
-    UserDTO register(UserDTO userDTO);
-    JwtAuthResponse login(LoginDTO loginDTO, AuthenticationManager authenticationManager);
+    UserResponseDTO register(NewUserDTO newUserDTO);
+    JwtAuthResponseDTO login(LoginDTO loginDTO, AuthenticationManager authenticationManager);
 }

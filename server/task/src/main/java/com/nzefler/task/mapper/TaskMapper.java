@@ -1,15 +1,17 @@
 package com.nzefler.task.mapper;
 
-import com.nzefler.task.dto.TaskDTO;
+import com.nzefler.task.dto.NewTaskDTO;
+import com.nzefler.task.dto.TaskRequestDTO;
+import com.nzefler.task.dto.TaskResponseDTO;
 import com.nzefler.task.entity.Task;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TaskMapper {
 
-    public TaskDTO toDTO(Task task){
+    public TaskResponseDTO toDTO(Task task){
         if(task == null) return null;
-        TaskDTO dto = new TaskDTO();
+        TaskResponseDTO dto = new TaskResponseDTO();
         dto.setTaskId(task.getTaskId());
         dto.setUserId(task.getUserId());
         dto.setName(task.getName());
@@ -22,7 +24,7 @@ public class TaskMapper {
         return dto;
     }
 
-    public Task toEntity(TaskDTO dto){
+    public Task toEntity(TaskRequestDTO dto){
         if(dto == null) return null;
         Task t = new Task();
         t.setTaskId(dto.getTaskId());
@@ -34,6 +36,20 @@ public class TaskMapper {
         t.setDuration(dto.getDuration());
         t.setCreatedAt(dto.getCreatedAt());
         t.setUpdatedAt(dto.getUpdatedAt());
+        return t;
+    }
+
+    public Task toEntity(NewTaskDTO newTaskDTO){
+        if(newTaskDTO == null) return null;
+        Task t = new Task();
+       t.setUserId(newTaskDTO.getUserId());
+        t.setName(newTaskDTO.getName());
+        t.setStatus(newTaskDTO.getStatus());
+        t.setDescription(newTaskDTO.getDescription());
+        t.setDate(newTaskDTO.getDate());
+        t.setDuration(newTaskDTO.getDuration());
+        t.setCreatedAt(newTaskDTO.getCreatedAt());
+        t.setUpdatedAt(newTaskDTO.getUpdatedAt());
         return t;
     }
 }

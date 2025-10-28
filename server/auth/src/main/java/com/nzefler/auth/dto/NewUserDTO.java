@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
-    private long id;
+public class NewUserDTO {
     private String userName;
     private String email;
     private String password;
@@ -15,14 +14,6 @@ public class UserDTO {
     private String address;
     private int age;
     private String sex;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getUserName() {
         return userName;
@@ -47,7 +38,6 @@ public class UserDTO {
     public void setPassword(String password) {
         this.password = password;
     }
-
 
     public OAuthProvider getProvider() {
         return provider;

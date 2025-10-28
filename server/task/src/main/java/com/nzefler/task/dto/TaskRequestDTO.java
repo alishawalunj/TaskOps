@@ -4,10 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskDTO {
+public class TaskRequestDTO {
     private long taskId;
     private long userId;
     private String name;
