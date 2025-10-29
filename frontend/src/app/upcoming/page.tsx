@@ -64,13 +64,14 @@ export default function Upcoming() {
             tasks.map((task) => (
               <TaskCircle
                 key={task.taskId}
+                taskId={task.taskId}
                 name={task.name}
                 description={task.description}
                 status={task.status}
               />
             ))
           ) : (
-            <p className="text-green-400">No previous task.</p>
+            <p className="text-green-400">No upcoming task yet.</p>
           )}
         </div>
       </div>

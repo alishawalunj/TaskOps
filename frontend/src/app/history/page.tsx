@@ -64,6 +64,7 @@ export default function History() {
             tasks.map((task) => (
               <TaskCircle
                 key={task.taskId}
+                taskId={task.taskId}
                 name={task.name}
                 description={task.description}
                 status={task.status}

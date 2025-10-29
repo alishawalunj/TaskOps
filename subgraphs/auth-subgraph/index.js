@@ -79,6 +79,13 @@ const resolvers = {
           }
         }
       `;
+      console.log('[Subgraph] getUserById request :', query);
+      console.log('[Subgraph] getUserById id:', id);
+      console.log('[Subgraph → Spring] Sending request to backend:');
+      console.log('URL:', SPRING_USER_URL);
+      console.log('Query:', query.loc?.source?.body || query);
+      console.log('Variables:', { id });
+      console.log('Headers:', { Authorization: context.token || "" });
       const res = await request(SPRING_USER_URL, query, { id }, {
         Authorization: context.token || "",
       });
@@ -195,12 +202,16 @@ const resolvers = {
 
 const server = new ApolloServer({
   schema: buildSubgraphSchema([{ typeDefs, resolvers }]),
-  context: ({ req }) => {
-    const token = req.headers.authorization || "";
-    return { token };
-  },
 });
 
-startStandaloneServer(server, { listen: { port: 4001 } }).then(({ url }) => {
+startStandaloneServer(server, { 
+  listen: { port: 4001 },
+  context: async ({ req }) => {
+    console.log('[Subgraph] Incoming request body:', req.body); 
+    const token = req.headers.authorization || '';
+    console.log('[Subgraph] Incoming request token:', token);
+    return { token };
+  },
+ }).then(({ url }) => {
   console.log(`User subgraph ready at ${url}`);
 });

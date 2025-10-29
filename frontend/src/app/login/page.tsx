@@ -1,14 +1,15 @@
 'use client';
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUsers } from "../hooks/useUsers";
+import { useUsersMutations } from "../hooks/useUsersMutations";
+import { LoginDTO } from "../graphql/types";
 
 export default function Login() {
   const router = useRouter();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState<LoginDTO>({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { loginUser } = useUsers();
+  const { loginUser } = useUsersMutations();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,45 +19,19 @@ export default function Login() {
     e.preventDefault();
     setError('');
 
-    if (!loginUser) {
-      setError('Login function is not available');
-      return;
-    }
-
     try {
       setLoading(true);
-      const result = await loginUser({ email: form.email, password: form.password });
+      const result = await loginUser(form);
       setLoading(false);
 
-      if (!result?.data?.loginUser) {
+      if (!result) {
         setError('Invalid credentials, please try again');
         return;
       }
 
-      const token = result.data.loginUser.accessToken;
-      localStorage.setItem("token", token);
-
-      const response = await fetch("http://localhost:8081/graphql", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          query: `
-            query {
-              me {
-                id
-                email
-                userName
-              }
-            }
-          `,
-        }),
-      });
-
-      const { data } = await response.json();
-      localStorage.setItem("userId", data.me.id);
+      // Save token and userId
+      localStorage.setItem("token", result.accessToken);
+      localStorage.setItem("userId", result.id);
 
       alert('Login Successful 🎉');
       router.push('/dashboard');
@@ -71,7 +46,7 @@ export default function Login() {
       <div className="w-96 p-8 rounded-2xl border-2 border-green-400 shadow-[0_0_20px_4px_rgba(0,255,0,0.6)]">
         <h1 className="text-3xl font-bold text-green-400 text-center mb-6">Login</h1>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-80">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-80 mx-auto">
           {error && <p className="text-red-500">{error}</p>}
 
           <input

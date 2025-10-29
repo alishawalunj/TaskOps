@@ -27,18 +27,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        System.out.println("[JWT Filter] Incoming headers:");
-        request.getHeaderNames().asIterator().forEachRemaining(name -> {
-            System.out.println(name + " : " + request.getHeader(name));
-        });
-
-        System.out.println("[JWT Filter] Path: " + request.getServletPath());
-        System.out.println("[JWT Filter] Method: " + request.getMethod());
-
-        request.getHeaderNames().asIterator()
-                .forEachRemaining(name -> System.out.println("[JWT Filter] Header: " + name + " = " + request.getHeader(name)));
-
-
         String path = request.getServletPath();
 
 
@@ -51,7 +39,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             String authHeader = request.getHeader("Authorization");
-            System.out.println("[JWT Filter] authHeader: " + authHeader);
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 String token = authHeader.substring(7);
                 try{

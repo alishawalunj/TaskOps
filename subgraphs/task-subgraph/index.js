@@ -242,7 +242,7 @@ const server = new ApolloServer({
 startStandaloneServer(server, {
   listen: { port: 4002 },
   context: async ({ req }) => {
-    console.log('[Subgraph] Incoming req:', req); 
+    console.log('[Subgraph] Incoming request body:', req.body); 
     const token = req.headers.authorization || '';
     console.log('[Subgraph] Incoming request token:', token);
     return { token };

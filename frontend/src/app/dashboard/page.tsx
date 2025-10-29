@@ -12,6 +12,7 @@ export default function Dashboard() {
   const [userId, setUserId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tasks, setTasks] = useState<TaskResponseDTO[]>([]);
+  const [creating, setCreating] = useState(false);
   const [newTask, setNewTask] = useState<NewTaskDTO>({
     name: "",
     description: "",
@@ -52,8 +53,9 @@ export default function Dashboard() {
   };
 
   const handleCreateTask = async () => {
-    if (!userId || !createTask) return;
-
+    if (!userId || creating) return;
+    
+    setCreating(true);
     const taskToSend: NewTaskDTO = {
       ...newTask,
       userId,
@@ -64,14 +66,42 @@ export default function Dashboard() {
     };
 
     try {
-      await createTask(taskToSend);
-      alert("Task created successfully!");
+      const created = await createTask(taskToSend);
+      if (!created) return;
+
+      alert('Task created successfully!');
       toggleModal();
       if (refetch) await refetch();
+
+      setNewTask({
+        name: '',
+        description: '',
+        status: 'Pending',
+        duration: 0,
+        date: '',
+        userId,
+        createdAt: '',
+        updatedAt: '',
+      });
     } catch (err) {
-      console.error("Mutation error:", err);
       alert("Failed to create task");
-    }
+    } finally {
+    setCreating(false);
+  }
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setNewTask({
+      name: '',
+      description: '',
+      status: 'Pending',
+      duration: 0,
+      date: '',
+      userId: userId || '',
+      createdAt: '',
+      updatedAt: '',
+    });
   };
 
   if (!userId) return <div className="text-green-400 p-10">Loading user...</div>;
@@ -107,9 +137,11 @@ export default function Dashboard() {
             tasks.map((task) => (
               <TaskCircle
                 key={task.taskId}
+                taskId={task.taskId}
                 name={task.name}
                 description={task.description}
                 status={task.status}
+                onDelete={(deletedId) => setTasks((prev) => prev.filter((t) => t.taskId !== deletedId))}
               />
             ))
           ) : (
@@ -143,7 +175,7 @@ export default function Dashboard() {
                 name="status"
                 value={newTask.status}
                 onChange={handleInputChange}
-                className="p-2 border rounded"
+                className="p-2 border rounded w-full appearance-none focus:outline-none focus:ring-2 focus:ring-green-400 bg-white text-gray-700"
               >
                 <option value="Pending">Pending</option>
                 <option value="Completed">Completed</option>
@@ -166,17 +198,11 @@ export default function Dashboard() {
             </div>
 
             <div className="flex justify-end gap-2 mt-4">
-              <button
-                onClick={toggleModal}
-                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-              >
+              <button onClick={handleCancel} className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
                 Cancel
               </button>
-              <button
-                onClick={handleCreateTask}
-                className="px-4 py-2 bg-green-500 text-black rounded hover:bg-green-600"
-              >
-                Create
+              <button onClick={handleCreateTask} className="px-4 py-2 bg-green-500 text-black rounded hover:bg-green-600" disabled={creating}>
+                {creating ? "Creating..." : "Create"}
               </button>
             </div>
           </div>

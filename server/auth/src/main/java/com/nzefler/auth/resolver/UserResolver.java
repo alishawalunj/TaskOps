@@ -30,10 +30,18 @@ public class UserResolver {
         return userService.findUserByEmail(email);
     }
 
-    @PreAuthorize("isAuthenticated()")
+//    @PreAuthorize("isAuthenticated()")
+//    @QueryMapping
+//    public UserResponseDTO getUserById(@Argument Long id) {
+//        System.out.println("In getUserById resolver");
+//        return userService.findUserById(id);
+//    }
+
     @QueryMapping
-    public UserResponseDTO getUserById(@Argument Long id) {
-        return userService.findUserById(id);
+    @PreAuthorize("isAuthenticated()")
+    public UserResponseDTO getUserById(@Argument String id) {
+        System.out.println("In getUserById resolver, id = " + id);
+        return userService.findUserById(Long.parseLong(id));
     }
 
     @PreAuthorize("isAuthenticated()")

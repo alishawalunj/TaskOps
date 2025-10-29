@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserResponseDTO findUserById(Long id) {
+        System.out.println("In getUserById");
         return userRepository.findById(id).map(mapper::toDTO).orElse(null);
     }
 

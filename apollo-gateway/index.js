@@ -13,9 +13,6 @@ const gateway = new ApolloGateway({
     return new RemoteGraphQLDataSource({
       url,
       willSendRequest({ request, context }) {
-        console.log('[Gateway] willSendRequest triggered for', url);
-        console.log('[Gateway] Context token:', context.token);
-
         if (context.token) {
           request.http?.headers.set('Authorization', context.token);
         }
@@ -32,7 +29,6 @@ const { url } = await startStandaloneServer(server, {
   listen: { port: 4000 },
   context: async ({ req }) => {
     const token = req.headers.authorization || '';
-    console.log('[Gateway] Incoming HTTP token:', token);
     return { token };
   },
 });
