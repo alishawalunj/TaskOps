@@ -4,41 +4,47 @@ import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
-import java.io.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class ResettableStreamHttpServletRequest extends HttpServletRequestWrapper {
 
     private byte[] rawData;
 
-    public ResettableStreamHttpServletRequest(HttpServletRequest request, String body) throws IOException {
+    public ResettableStreamHttpServletRequest(HttpServletRequest request) throws IOException {
         super(request);
-        this.rawData = body.getBytes(request.getCharacterEncoding() != null ? request.getCharacterEncoding() : "UTF-8");
+        try (InputStream is = request.getInputStream()) {
+            this.rawData = is.readAllBytes();
+        }
     }
 
     @Override
     public ServletInputStream getInputStream() {
-        final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(this.rawData);
+        final ByteArrayInputStream bais = new ByteArrayInputStream(rawData);
         return new ServletInputStream() {
             @Override
-            public int read() {
-                return byteArrayInputStream.read();
+            public int read() throws IOException {
+                return bais.read();
             }
+
             @Override
             public boolean isFinished() {
-                return byteArrayInputStream.available() == 0;
+                return bais.available() == 0;
             }
+
             @Override
             public boolean isReady() {
                 return true;
             }
+
             @Override
-            public void setReadListener(ReadListener listener) {}
+            public void setReadListener(ReadListener readListener) { }
         };
     }
 
-    @Override
-    public BufferedReader getReader() {
-        return new BufferedReader(new InputStreamReader(getInputStream()));
+    public byte[] getBody() {
+        return this.rawData;
     }
 }
-

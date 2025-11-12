@@ -174,7 +174,6 @@ const resolvers = {
 
   Mutation: {
     createTask: async (_, { task }, context) => {
-      console.log('[Subgraph] createTask payload:', task);
       const mutation = gqlRequest`
         mutation ($task: NewTaskDTO!) {
           createTask(task: $task) {
@@ -189,13 +188,9 @@ const resolvers = {
           }
         }
       `;
-      console.log('[Subgraph] Sending request to Spring Task Service', SPRING_TASK_URL, mutation, { task }, {
-        headers: { Authorization: context.token || '' },
-      });
       const res = await request(SPRING_TASK_URL, mutation, { task }, {
         Authorization: context.token || '' ,
       });
-      console.log('[Subgraph] Task created with ID:', res.createTask.taskId);
       return res.createTask;
     },
 
@@ -242,9 +237,7 @@ const server = new ApolloServer({
 startStandaloneServer(server, {
   listen: { port: 4002 },
   context: async ({ req }) => {
-    console.log('[Subgraph] Incoming request body:', req.body); 
     const token = req.headers.authorization || '';
-    console.log('[Subgraph] Incoming request token:', token);
     return { token };
   },
 }).then(({ url }) => {

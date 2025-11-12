@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 @Component
@@ -25,41 +26,43 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
-        String path = request.getServletPath();
 
+        String path = request.getServletPath();
+        ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
 
         if ("/graphql".equals(path) && "POST".equalsIgnoreCase(request.getMethod())) {
-            ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
-            String body = new String(wrappedRequest.getContentAsByteArray());
-            if (body.contains("__schema")) {
-                filterChain.doFilter(wrappedRequest, response);
-                return;
-            }
-
-            String authHeader = request.getHeader("Authorization");
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                String token = authHeader.substring(7);
-                try{
-                    System.out.println("[JWT Filter] Validating token via Auth service: " + token);
-
-                    UserTokenDTO user = authClient.validateToken(token);
-
-                    UsernamePasswordAuthenticationToken auth =
-                            new UsernamePasswordAuthenticationToken(user.getId(), null, Collections.emptyList());
-                    auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(wrappedRequest));
-                    SecurityContextHolder.getContext().setAuthentication(auth);
-
-                }catch (Exception e) {
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
+            try {
+                String body = new String(wrappedRequest.getContentAsByteArray(), StandardCharsets.UTF_8);
+                if (body.contains("__schema")) {
+                    filterChain.doFilter(wrappedRequest, response);
                     return;
                 }
-            }
+                String authHeader = wrappedRequest.getHeader("Authorization");
+                if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                    String token = authHeader.substring(7);
+                    try {
+                        UserTokenDTO user = authClient.validateToken(token);
+                        UsernamePasswordAuthenticationToken authentication =
+                                new UsernamePasswordAuthenticationToken(user.getId(), null, Collections.emptyList());
+                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(wrappedRequest));
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            filterChain.doFilter(wrappedRequest, response);
+                    } catch (Exception e) {
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
+                        return;
+                    }
+                }
+                filterChain.doFilter(wrappedRequest, response);
+            } catch (Exception e) {
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Error");
+            }
         } else {
             filterChain.doFilter(request, response);
         }
     }
 }
+

@@ -37,7 +37,6 @@ public class TaskServiceImpl implements TaskService{
         try {
             Task newTask = mapper.toEntity(newTaskDTO);
             Task savedTask = taskRepository.save(newTask);
-            System.out.println("Task saved successfully");
             return mapper.toDTO(savedTask);
         } catch (Exception e) {
             System.err.println("Error saving task: " + e.getMessage());

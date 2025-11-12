@@ -64,14 +64,14 @@ input UserRequestDTO {
 
 const resolvers = {
   Query: {
+
     getUserById: async (_, { id }, context) => {
       const query = gqlRequest`
-        query ($id: ID!) {
+        query GetUserById($id: ID!) {
           getUserById(id: $id) {
             id
             userName
             email
-            password
             provider
             address
             age
@@ -79,16 +79,13 @@ const resolvers = {
           }
         }
       `;
-      console.log('[Subgraph] getUserById request :', query);
-      console.log('[Subgraph] getUserById id:', id);
-      console.log('[Subgraph → Spring] Sending request to backend:');
-      console.log('URL:', SPRING_USER_URL);
-      console.log('Query:', query.loc?.source?.body || query);
-      console.log('Variables:', { id });
-      console.log('Headers:', { Authorization: context.token || "" });
-      const res = await request(SPRING_USER_URL, query, { id }, {
-        Authorization: context.token || "",
-      });
+
+      const res = await request(
+        SPRING_USER_URL,
+        query,
+        { id },
+        { Authorization: context.token || "" }
+      );
       return res.getUserById;
     },
 
@@ -99,7 +96,6 @@ const resolvers = {
             id
             userName
             email
-            password
             provider
             address
             age
@@ -122,6 +118,7 @@ const resolvers = {
             id
             userName
             email
+            password
             provider
             address
             age
@@ -146,7 +143,8 @@ const resolvers = {
       return res.loginUser;
     },
 
-    createUser: async (_, { user }, context) => {
+    createUser: async (_, { user }) => {
+      console.log('[Subgraph] createUser payload:', user);
       const mutation = gqlRequest`
         mutation ($user: NewUserDTO!) {
           createUser(user: $user) {
@@ -160,9 +158,13 @@ const resolvers = {
           }
         }
       `;
-      const res = await request(SPRING_USER_URL, mutation, { user }, {
-        Authorization: context.token || "",
-      });
+
+      console.log('********[Subgraph → Spring] Sending request to backend:');
+      console.log('URL:', SPRING_USER_URL);
+      console.log('URL1:', mutation);
+      console.log('URL2:', {user});
+      const res = await request(SPRING_USER_URL, mutation, { user });
+      console.log('Response:', res);
       return res.createUser;
     },
 
@@ -207,9 +209,7 @@ const server = new ApolloServer({
 startStandaloneServer(server, { 
   listen: { port: 4001 },
   context: async ({ req }) => {
-    console.log('[Subgraph] Incoming request body:', req.body); 
     const token = req.headers.authorization || '';
-    console.log('[Subgraph] Incoming request token:', token);
     return { token };
   },
  }).then(({ url }) => {

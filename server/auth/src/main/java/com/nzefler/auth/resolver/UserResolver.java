@@ -30,18 +30,15 @@ public class UserResolver {
         return userService.findUserByEmail(email);
     }
 
-//    @PreAuthorize("isAuthenticated()")
-//    @QueryMapping
-//    public UserResponseDTO getUserById(@Argument Long id) {
-//        System.out.println("In getUserById resolver");
-//        return userService.findUserById(id);
-//    }
-
-    @QueryMapping
     @PreAuthorize("isAuthenticated()")
-    public UserResponseDTO getUserById(@Argument String id) {
-        System.out.println("In getUserById resolver, id = " + id);
-        return userService.findUserById(Long.parseLong(id));
+    @QueryMapping
+    public UserResponseDTO getUserById(@Argument("id") String id) {
+        try {
+            Long userId = Long.parseLong(id);
+            return userService.findUserById(userId);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid user ID format");
+        }
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -50,7 +47,6 @@ public class UserResolver {
         return userService.findAllUsers();
     }
 
-    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public UserResponseDTO createUser(@Argument("user") NewUserDTO newUserDTO) {
         return userService.saveUser(newUserDTO);

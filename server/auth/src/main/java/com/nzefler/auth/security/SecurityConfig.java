@@ -31,18 +31,33 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain apiSecurityChain(HttpSecurity http) throws Exception {
+//        http
+//                .securityMatcher("/graphql/**")
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authorizeHttpRequests(auth -> auth
+////                        .requestMatchers("/graphql").permitAll()
+//                                .requestMatchers("/graphql", "/graphql/**").permitAll()
+//                                .anyRequest().authenticated()
+//                )
+//                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .exceptionHandling(ex -> ex
+//                        .authenticationEntryPoint((req, res, e) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
+//                );
         http
                 .securityMatcher("/graphql/**")
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/graphql").permitAll()
-//                        .anyRequest().authenticated()
+                        .requestMatchers("/graphql").permitAll() // allow access to GraphQL endpoint
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((req, res, e) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
                 );
+
+
 
         return http.build();
     }
@@ -51,7 +66,7 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:8082"));
+        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:8082", "http://localhost:4001"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setExposedHeaders(List.of("Authorization"));

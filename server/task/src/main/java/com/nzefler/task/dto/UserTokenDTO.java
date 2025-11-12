@@ -1,6 +1,5 @@
 package com.nzefler.task.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

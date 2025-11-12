@@ -24,6 +24,7 @@ public class AuthResolver {
 
     @MutationMapping
     public JwtAuthResponseDTO loginUser(@Argument("credentials") LoginDTO loginDTO) {
+        System.out.println("In Auth Resolver login method");
         return authService.login(loginDTO, authenticationManager);
     }
 

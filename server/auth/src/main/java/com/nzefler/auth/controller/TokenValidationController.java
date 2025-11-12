@@ -20,7 +20,6 @@ public class TokenValidationController {
             throw new RuntimeException("Missing or invalid Authorization header");
         }
         String token = authHeader.substring(7);
-        System.out.println("[AuthService] Token extracted: " + token);
         if (!jwtTokenProvider.validateToken(token)) {
             throw new RuntimeException("Invalid token");
         }

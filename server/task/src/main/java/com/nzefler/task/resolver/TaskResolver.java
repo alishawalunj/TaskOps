@@ -3,7 +3,6 @@ package com.nzefler.task.resolver;
 import com.nzefler.task.dto.NewTaskDTO;
 import com.nzefler.task.dto.TaskRequestDTO;
 import com.nzefler.task.dto.TaskResponseDTO;
-import com.nzefler.task.entity.Task;
 import com.nzefler.task.service.TaskService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -37,12 +36,9 @@ public class TaskResolver {
     @MutationMapping
     public TaskResponseDTO createTask(@Argument("task") NewTaskDTO newTaskDTO) {
         try {
-            System.out.println("Received createTask request: " + newTaskDTO);
             TaskResponseDTO savedTask = taskService.saveTask(newTaskDTO);
-            System.out.println("Task saved successfully: " + savedTask);
             return savedTask;
         } catch (Exception e) {
-            System.err.println("Error creating task: " + e.getMessage());
             throw new RuntimeException("Failed to create task", e);
         }
     }

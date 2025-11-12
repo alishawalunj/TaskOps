@@ -30,7 +30,6 @@ export interface UserResponseDTO {
   id: string;
   userName: string;
   email: string;
-  password?: string;
   address?: string;
   provider?: string;
   age?: number | string;

@@ -14,7 +14,6 @@ export const CREATE_USER = gql`
     createUser(user: $user) {
       userName
       email
-      password
       provider
       address
       age

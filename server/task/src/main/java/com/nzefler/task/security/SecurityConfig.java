@@ -32,35 +32,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Disable CSRF
                 .csrf(csrf -> csrf.disable())
-
-                // Use the new CORS configuration style
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
-                // Configure authorization
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/graphql").permitAll() // allow GraphQL introspection/login
+                        .requestMatchers("/graphql").permitAll()
                         .anyRequest().authenticated()
                 )
-
-                // Stateless session
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // Exception handling
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((req, res, e) ->
                                 res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
                 )
-
-                // Add JWT filter
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
-    // ✅ Recommended modern CORS configuration
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();

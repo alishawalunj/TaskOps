@@ -1,11 +1,11 @@
 'use client';
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUsers } from "../hooks/useUsers";
+import { useUsersMutations } from "../hooks/useUsersMutations";
 
 export default function Register(){
     const router = useRouter();
-    const { createUser } = useUsers();
+    const { createUser } = useUsersMutations();
     const [ form , setForm ] = useState({
         username:'',
         email:'',
