@@ -57,7 +57,7 @@
 ### Setup & Run
 1. Clone the repo:
 ```bash
-git clone https://github.com/username/TaskOps.git
+git clone https://github.com/alishawalunj/TaskOps.git
 cd TaskOps
 ````
 
