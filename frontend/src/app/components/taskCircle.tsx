@@ -46,7 +46,7 @@ export default function TaskCircle(task: Task) {
       await updateTask(payload);
     } catch (err) {
       alert("Failed to update status");
-      setStatus(status === "Completed" ? "Pending" : "Completed"); // revert
+      setStatus(status === "Completed" ? "Pending" : "Completed");
     }
   };
 

@@ -15,7 +15,6 @@ export default function Profile() {
     id: "",
     userName: "",
     email: "",
-    password: "",
     address: "",
     provider: "",
     age: "",
@@ -23,24 +22,18 @@ export default function Profile() {
   });
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-
-  // Fetch userId from localStorage on load
   useEffect(() => {
     const storedId = localStorage.getItem("userId");
     if (storedId) setUserId(storedId);
   }, []);
 
-  // Fetch user data from backend
   const { user, loading, error: fetchError, refetch } = useUserById(userId || "");
-
-  // Populate form when user data loads
   useEffect(() => {
     if (user) {
       setFormData({
         id: user.id || "",
         userName: user.userName || "",
         email: user.email || "",
-        password: user.password || "",
         address: user.address || "",
         provider: user.provider || "",
         age: user.age?.toString() || "",
@@ -65,7 +58,7 @@ export default function Profile() {
     setError("");
     try {
       await updateUser(formData);
-      await refetch(); // Refresh user data
+      await refetch();
       setIsEditing(false);
     } catch (err: any) {
       setError(err.message || "Failed to update profile");
@@ -131,7 +124,6 @@ export default function Profile() {
             {[
               { label: "Username", key: "userName" },
               { label: "Email", key: "email" },
-              { label: "Password", key: "password" },
               { label: "Address", key: "address" },
               { label: "Age", key: "age" },
               { label: "Sex", key: "sex" },
