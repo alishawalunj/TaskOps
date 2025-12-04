@@ -26,6 +26,13 @@ input LoginDTO {
     password: String!
 }
 
+input OAuthLoginDTO {
+    provider: String!
+    providerId: String!
+    email: String!
+    userName: String!
+}
+
 # --- OUTPUT TYPES ---
 
 type UserResponseDTO {
@@ -43,19 +50,26 @@ type JwtAuthResponseDTO {
     id: ID!
 }
 
+type OAuthRedirectUrlResponse {
+    url: String!
+}
+
 # --- QUERIES ---
 
 type Query {
     me: UserResponseDTO
     getUserById(id: ID!): UserResponseDTO
     getAllUsers: [UserResponseDTO!]!
+    getGoogleRedirectUrl: OAuthRedirectUrlResponse!
+    getGithubRedirectUrl: OAuthRedirectUrlResponse!
+
 }
 
 # --- MUTATIONS ---
 
 type Mutation {
-    registerUser(user: NewUserDTO!): UserResponseDTO!
     loginUser(credentials: LoginDTO!): JwtAuthResponseDTO!
+    loginOAuthUser(credentials: OAuthLoginDTO!): JwtAuthResponseDTO!
 
     createUser(user: NewUserDTO!): UserResponseDTO!
     updateUser(user: UserRequestDTO!): UserResponseDTO!

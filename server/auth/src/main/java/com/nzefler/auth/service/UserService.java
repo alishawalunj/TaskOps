@@ -3,8 +3,6 @@ package com.nzefler.auth.service;
 import com.nzefler.auth.dto.NewUserDTO;
 import com.nzefler.auth.dto.UserRequestDTO;
 import com.nzefler.auth.dto.UserResponseDTO;
-
-
 import java.util.List;
 
 public interface UserService {

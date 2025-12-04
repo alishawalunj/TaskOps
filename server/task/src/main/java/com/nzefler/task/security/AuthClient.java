@@ -18,9 +18,7 @@ public class AuthClient {
     public UserTokenDTO validateToken(String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
-
         HttpEntity<Void> entity = new HttpEntity<>(headers);
-
         try {
             ResponseEntity<UserTokenDTO> response = restTemplate.exchange(
                     authServiceUrl, HttpMethod.POST, entity, UserTokenDTO.class
@@ -32,5 +30,4 @@ public class AuthClient {
             return null;
         }
     }
-
 }

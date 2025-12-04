@@ -1,7 +1,7 @@
 package com.nzefler.auth.controller;
 
 import com.nzefler.auth.dto.UserTokenDTO;
-import com.nzefler.auth.security.JwtTokenProvider;
+import com.nzefler.auth.security.jwt.JwtTokenProvider;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,7 +23,6 @@ public class TokenValidationController {
         if (!jwtTokenProvider.validateToken(token)) {
             throw new RuntimeException("Invalid token");
         }
-
         Long userId = jwtTokenProvider.extractUserId(token);
         String email = jwtTokenProvider.extractEmail(token);
         return new UserTokenDTO(userId, email);

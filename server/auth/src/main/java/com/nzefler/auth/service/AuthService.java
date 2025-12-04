@@ -5,6 +5,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface AuthService {
-    UserResponseDTO register(NewUserDTO newUserDTO);
     JwtAuthResponseDTO login(LoginDTO loginDTO, AuthenticationManager authenticationManager);
+    JwtAuthResponseDTO oauthLogin(OAuthLoginDTO dto);
+
+    OAuthRedirectUrlResponse buildGoogleRedirectUrl();
+    OAuthRedirectUrlResponse buildGithubRedirectUrl();
+
+    OAuthLoginDTO exchangeGoogleCode(String code);
+    OAuthLoginDTO exchangeGithubCode(String code);
 }

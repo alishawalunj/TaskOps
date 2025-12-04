@@ -3,6 +3,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUsersMutations } from "../hooks/useUsersMutations";
 import { LoginDTO } from "../graphql/types";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
+import { useOAuthRedirect } from '../hooks/useOAuthRedirect';
+
 
 export default function Login() {
   const router = useRouter();
@@ -10,6 +14,15 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { loginUser } = useUsersMutations();
+  const { googleLogin, githubLogin } = useOAuthRedirect();
+  
+  const handleGoogleLogin = () => {
+    googleLogin();
+  }
+
+  const handleGithubLogin = () => {
+    githubLogin();
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -29,7 +42,6 @@ export default function Login() {
         return;
       }
 
-      // Save token and userId
       localStorage.setItem("token", result.accessToken);
       localStorage.setItem("userId", result.id);
 
@@ -42,11 +54,11 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center">
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center px-4">
       <div className="w-96 p-8 rounded-2xl border-2 border-green-400 shadow-[0_0_20px_4px_rgba(0,255,0,0.6)]">
         <h1 className="text-3xl font-bold text-green-400 text-center mb-6">Login</h1>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-80 mx-auto">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full">
           {error && <p className="text-red-500">{error}</p>}
 
           <input
@@ -84,6 +96,20 @@ export default function Login() {
             </a>
           </p>
         </form>
+      </div>
+
+      <div className="w-96 mt-15 flex flex-col gap-4">
+        <button
+          onClick={handleGoogleLogin} className="flex items-center justify-center gap-3 px-6 py-3 rounded-lg bg-green-500 text-black font-semibold hover:shadow-[0_0_40px_#39FF14] hover:bg-green-400 transition-all duration-300">
+          <FcGoogle size={22} />
+          Login with Google
+        </button>
+
+        <button
+          onClick={handleGithubLogin} className="flex items-center justify-center gap-3 px-6 py-3 rounded-lg bg-green-500 text-black font-semibold hover:shadow-[0_0_40px_#39FF14] hover:bg-green-400 transition-all duration-300">
+          <FaGithub size={22} />
+          Login with GitHub
+        </button>
       </div>
     </div>
   );

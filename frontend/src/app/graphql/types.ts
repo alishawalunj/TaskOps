@@ -4,6 +4,14 @@ export interface LoginDTO {
     email: string;
     password: string;
 }
+
+export interface OAuthLoginDTO {
+    provider: string;
+    providerId: string;
+    email: string;
+    userName: string;
+}
+
 //new user
 export interface NewUserDTO {
   userName: string;
@@ -71,4 +79,8 @@ export interface TaskResponseDTO {
   date: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface OAuthRedirectUrlResponse {
+  url: string;
 }

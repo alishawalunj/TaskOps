@@ -32,6 +32,14 @@ input UserRequestDTO {
     email: String!
     password: String!
   }
+  
+  input OAuthLoginDTO {
+    provider: String!
+    providerId: String!
+    email: String!
+    userName: String!
+  }
+
 
   type UserResponseDTO @key(fields: "id") {
     id: ID!
@@ -48,14 +56,21 @@ input UserRequestDTO {
     id: ID!
   }
 
+  type OAuthRedirectUrlResponse {
+    url: String!
+  }
+
   type Query {
     getUserById(id: ID!): UserResponseDTO
     getAllUsers: [UserResponseDTO!]!
+    getGoogleRedirectUrl: OAuthRedirectUrlResponse!
+    getGithubRedirectUrl: OAuthRedirectUrlResponse!
   }
 
   type Mutation {
     registerUser(user: NewUserDTO!): UserResponseDTO!
     loginUser(credentials: LoginDTO!): JwtAuthResponseDTO!
+    loginOAuthUser(credentials: OAuthLoginDTO!): JwtAuthResponseDTO!
     createUser(user: NewUserDTO!): UserResponseDTO!
     updateUser(user: UserRequestDTO!): UserResponseDTO!
     deleteUser(id: ID!): Boolean!
@@ -79,7 +94,6 @@ const resolvers = {
           }
         }
       `;
-
       const res = await request(
         SPRING_USER_URL,
         query,
@@ -108,7 +122,34 @@ const resolvers = {
       });
       return res.getAllUsers;
     },
+
+    getGoogleRedirectUrl: async () => {
+      const query = gqlRequest`
+        {
+          getGoogleRedirectUrl {
+            url
+          }
+        }
+      `;
+      const res = await request(SPRING_USER_URL, query, {});
+      return res.getGoogleRedirectUrl;
+    },
+
+    getGithubRedirectUrl: async () => {
+      const query = gqlRequest`
+        {
+          getGithubRedirectUrl {
+            url
+          }
+        }
+      `;
+      console.log("In github redirect url");
+      const res = await request(SPRING_USER_URL, query, {});
+      return res.getGithubRedirectUrl;
+    },
   },
+
+
 
   Mutation: {
     registerUser: async (_, { user }) => {
@@ -143,6 +184,19 @@ const resolvers = {
       return res.loginUser;
     },
 
+    loginOAuthUser: async (_, { credentials }) => {
+      const mutation = gqlRequest`
+        mutation ($credentials: OAuthLoginDTO!) {
+          loginOAuthUser(credentials: $credentials) {
+            accessToken
+            id
+          }
+        }
+      `;
+      const res = await request(SPRING_USER_URL, mutation, { credentials });
+      return res.loginUser;
+    },
+
     createUser: async (_, { user }) => {
       console.log('[Subgraph] createUser payload:', user);
       const mutation = gqlRequest`
@@ -158,13 +212,7 @@ const resolvers = {
           }
         }
       `;
-
-      console.log('********[Subgraph → Spring] Sending request to backend:');
-      console.log('URL:', SPRING_USER_URL);
-      console.log('URL1:', mutation);
-      console.log('URL2:', {user});
       const res = await request(SPRING_USER_URL, mutation, { user });
-      console.log('Response:', res);
       return res.createUser;
     },
 

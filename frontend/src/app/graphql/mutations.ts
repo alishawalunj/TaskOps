@@ -8,6 +8,17 @@ export const LOGIN_USER = gql`
     }
   }
 `;
+
+export const OAUTH_LOGIN_USER = gql`
+  mutation oAuthLoginUser($credentials: OAuthLoginDTO!) {
+    loginOAuthUser(credentials: $credentials) {
+      accessToken
+      id
+    }
+  }
+`;
+
+
 //useer mutations
 export const CREATE_USER = gql`
   mutation CreateUser($user: NewUserDTO!) {
@@ -28,7 +39,6 @@ export const UPDATE_USER = gql`
       id
       userName
       email
-      password
       provider
       address
       age

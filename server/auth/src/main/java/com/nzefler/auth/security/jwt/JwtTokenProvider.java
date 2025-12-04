@@ -1,13 +1,11 @@
-package com.nzefler.auth.security;
+package com.nzefler.auth.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
@@ -19,7 +17,7 @@ public class JwtTokenProvider {
     private final SecretKey jwtSecret;
     private final long JWT_EXPIRATION_MS = 1000 * 60 * 60;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secret) {
+    public JwtTokenProvider(@Value("${app.jwt-secret}") String secret) {
         this.jwtSecret = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
     }
     public String generateToken(String email, Long userId){

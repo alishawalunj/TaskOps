@@ -13,9 +13,7 @@ export function useAuth(redirectIfNotLoggedIn = false){
 
         if (currentUser) {
             localStorage.setItem("userId", JSON.stringify(currentUser.id));
-        } else {
-            localStorage.removeItem("userId");
-        }
+        } 
 
         if(redirectIfNotLoggedIn && !currentUser){
             router.push("/login");

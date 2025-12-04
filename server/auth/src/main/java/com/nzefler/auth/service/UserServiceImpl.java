@@ -8,7 +8,6 @@ import com.nzefler.auth.mapper.UserMapper;
 import com.nzefler.auth.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +26,6 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserResponseDTO findUserById(Long id) {
-        System.out.println("In getUserById");
         return userRepository.findById(id).map(mapper::toDTO).orElse(null);
     }
 

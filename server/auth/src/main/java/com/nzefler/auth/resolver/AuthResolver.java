@@ -4,6 +4,7 @@ import com.nzefler.auth.dto.*;
 import com.nzefler.auth.service.AuthService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Controller;
 
@@ -18,14 +19,25 @@ public class AuthResolver {
     }
 
     @MutationMapping
-    public UserResponseDTO registerUser(@Argument("user") NewUserDTO newUserDTO) {
-        return authService.register(newUserDTO);
-    }
-
-    @MutationMapping
     public JwtAuthResponseDTO loginUser(@Argument("credentials") LoginDTO loginDTO) {
-        System.out.println("In Auth Resolver login method");
         return authService.login(loginDTO, authenticationManager);
     }
 
+    @MutationMapping
+    public JwtAuthResponseDTO loginOAuthUser(@Argument("credentials") OAuthLoginDTO dto) {
+        return authService.oauthLogin(dto);
+    }
+
+
+    @QueryMapping
+    public OAuthRedirectUrlResponse getGoogleRedirectUrl(){
+        System.out.println("In google Redirect resolver");
+        return authService.buildGoogleRedirectUrl();
+    }
+
+    @QueryMapping
+    public OAuthRedirectUrlResponse getGithubRedirectUrl(){
+        System.out.println("In github Redirect resolver");
+        return authService.buildGithubRedirectUrl();
+    }
 }

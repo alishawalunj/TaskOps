@@ -4,6 +4,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class UserTokenDTO {
+
     private Long id;
     private String email;
 

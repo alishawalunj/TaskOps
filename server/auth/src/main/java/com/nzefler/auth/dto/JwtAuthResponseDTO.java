@@ -4,6 +4,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class JwtAuthResponseDTO {
+
     private String accessToken;
     private long id;
 

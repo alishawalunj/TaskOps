@@ -108,3 +108,22 @@ export const GET_ALL_CURRENT_TASKS = gql`
     }
   }
 `;
+
+export const GET_GOOGLE_REDIRECT_URL = gql`
+  query GetGoogleRedirectURL {
+    getGoogleRedirectUrl {
+      url
+    }
+  }
+
+`;
+
+export const GET_GITHUB_REDIRECT_URL = gql`
+  query GetGithubRedirectURL {
+    getGithubRedirectUrl {
+      url
+    }
+  }
+
+`;
+

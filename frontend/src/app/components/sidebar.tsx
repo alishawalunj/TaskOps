@@ -1,6 +1,7 @@
 'use client';
 import React from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../hooks/useAuth";
 
 interface SideBarProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface SideBarProps {
 
 export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
     const router = useRouter();
+    const { logout } = useAuth();
     const handleNavigation = (path: string) =>{
         toggleSidebar();
         router.push(path);
@@ -28,7 +30,7 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
             <li onClick={() => handleNavigation("/visualization")} className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">Visualization</li>
             <li onClick={() => handleNavigation("/history")} className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">History</li>
             <li onClick={() => handleNavigation("/upcoming")} className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">Upcoming</li>
-            <li onClick={() => handleNavigation("/logout")} className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">Logout</li>
+            <li onClick={() => { logout(); toggleSidebar(); }}  className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">Logout</li>
         </ul>
         </div>
     );

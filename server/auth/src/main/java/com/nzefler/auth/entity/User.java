@@ -14,10 +14,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String userName;
+    @Column(unique = true)
     private String email;
     private String password;
     @Enumerated(EnumType.STRING)
     private OAuthProvider provider;
+    private String providerId;
     private String address;
     private int age;
     private String sex;
@@ -60,6 +62,14 @@ public class User {
 
     public void setProvider(OAuthProvider provider) {
         this.provider = provider;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 
     public String getAddress() {
