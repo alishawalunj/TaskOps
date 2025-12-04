@@ -6,12 +6,12 @@
 
 ## 🛠 Tech Stack
 
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![GraphQL](https://img.shields.io/badge/GraphQL-E10098?style=for-the-badge&logo=graphql&logoColor=white)
 ![Apollo Federation](https://img.shields.io/badge/Apollo%20Federation-311C87?style=for-the-badge&logo=apollo-graphql&logoColor=white)
 ![Google OAuth](https://img.shields.io/badge/Google%20OAuth-4285F4?style=for-the-badge&logo=google&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
 
 ---
@@ -28,20 +28,20 @@
 ```
 
 
-Frontend (Next.js) - Port 4000
-           |
-           v
-   Apollo Gateway - Port 4000
-     /                 \
-    v                   v
-Auth Subgraph       Task Subgraph
-   4001                4002
-   |                     |
-   v                     v
-Backend Services (Spring Boot)
-   |                     |
- Auth Service 8081     Task Service 8082
-(GraphQL APIs)        (GraphQL APIs)
+                                            Frontend (Next.js) - Port 4000
+                                                       |
+                                                       v
+                                               Apollo Gateway - Port 4000
+                                                 /                 \
+                                                v                   v
+                                            Auth Subgraph       Task Subgraph
+                                               4001                4002
+                                               |                     |
+                                               v                     v
+                                            Backend Services(Spring Boot)
+                                               |                     |
+                                             Auth Service 8081     Task Service 8082
+                                            (GraphQL APIs)        (GraphQL APIs)
 
 
 ````
