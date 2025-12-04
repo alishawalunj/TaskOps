@@ -100,6 +100,5 @@ npm run dev
 
 ## 🎥 Demo
 
-*(Optional: Embed a Loom / YouTube demo link here)*
 
 ---
