@@ -56,6 +56,17 @@ graph TD
 
 ````
 
+graph TD
+    A[Next.js Frontend <br>Port 4000]:::frontend --> B[Apollo Gateway <br>Port 4000]:::gateway
+    B --> C[Auth Subgraph <br>Port 4001]:::subgraph
+    B --> D[Task Subgraph <br>Port 4002]:::subgraph
+    C --> E[Auth Service <br>Spring Boot GraphQL <br>Port 8081]:::backend
+    D --> F[Task Service <br>Spring Boot GraphQL <br>Port 8082]:::backend
+
+classDef frontend fill:#000000,stroke:#fff,color:#fff
+classDef gateway fill:#FF9900,stroke:#fff,color:#fff
+classDef subgraph fill:#E10098,stroke:#fff,color:#fff
+classDef backend fill:#6DB33F,stroke:#fff,color:#fff
 
 
 ---
