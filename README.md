@@ -1,4 +1,4 @@
-# 🌟 TaskOps
+🌟 TaskOps
 
 **TaskOps** is a system to manage daily tasks and track task records efficiently. It supports **Google OAuth login** and is secured with **JWT authentication**.
 
@@ -24,27 +24,16 @@
 
 ---
 
-## 📂 Project Structure
-```
+## 🏛️ Architecture
+
+### 🏗️ System Architecture Overview
+
+![51562AD2-621D-4BDC-AB2C-684202D99A7F](https://github.com/user-attachments/assets/c2cebc21-46e8-4edd-b9aa-a709a06051f1)
 
 
-                                            Frontend (Next.js) - Port 4000
-                                                       |
-                                                       v
-                                               Apollo Gateway - Port 4000
-                                                 /                 \
-                                                v                   v
-                                            Auth Subgraph       Task Subgraph
-                                               4001                4002
-                                               |                     |
-                                               v                     v
-                                            Backend Services(Spring Boot)
-                                               |                     |
-                                             Auth Service 8081     Task Service 8082
-                                            (GraphQL APIs)        (GraphQL APIs)
+### 🔐 Authentication Architecture
 
 
-````
 ---
 
 ## 🚀 Getting Started
@@ -53,6 +42,7 @@
 - Java 17+
 - Node 20+
 - PostgreSQL
+
 
 ### Setup & Run
 1. Clone the repo:
