@@ -144,16 +144,16 @@
   2. Run GraphQL Subgraphs:
      ```bash
       cd subgraphs/auth-subgraph
-      npm start   # Runs on :4001
+      node index.js   # Runs on :4001
       
       cd ../task-subgraph
-      npm start   # Runs on :4002
+      node index.js   # Runs on :4002
      ````
      
   3. Run Apollo Gateway:
      ```bash
      cd apollo-gateway
-     npm start   # Runs on :4000
+     node index.js    # Runs on :4000
      ````
     
   4. Run Frontend:
