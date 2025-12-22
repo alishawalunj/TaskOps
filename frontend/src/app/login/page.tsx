@@ -81,11 +81,7 @@ export default function Login() {
             required
           />
 
-          <button
-            type="submit"
-            className="bg-green-500 text-black font-semibold p-2 rounded hover:bg-green-600 transition-colors"
-            disabled={loading}
-          >
+          <button type="submit" className="bg-green-500 text-black font-semibold p-2 rounded hover:bg-green-600 transition-colors" disabled={loading}>
             {loading ? 'Logging in...' : 'Login'}
           </button>
 

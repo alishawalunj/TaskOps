@@ -72,11 +72,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-black flex flex-col relative overflow-x-hidden">
       {/* Sidebar Toggle */}
-      <button
-        type="button"
-        onClick={toggleSidebar}
-        className="absolute top-4 left-4 z-50 text-green-400 hover:text-green-600 focus:outline-none"
-      >
+      <button type="button" onClick={toggleSidebar} className="absolute top-4 left-4 z-50 text-green-400 hover:text-green-600 focus:outline-none">
         <CiMenuBurger className="w-12 h-6" />
       </button>
 
@@ -84,21 +80,13 @@ export default function Profile() {
 
       {/* Main Content */}
       <div
-        className={`transition-all duration-300 flex items-center justify-center ${
-          isSidebarOpen ? "ml-64" : "ml-0"
-        } px-6 py-10`}
-      >
+        className={`transition-all duration-300 flex items-center justify-center ${ isSidebarOpen ? "ml-64" : "ml-0" } px-6 py-10`}>
         <div
           className={`relative border border-green-400 shadow-[0_0_20px_#00ff88] rounded-2xl w-[700px] md:w-[850px] p-10 flex flex-col items-center justify-center gap-6 transition-all transform hover:scale-[1.01]
-          ${isEditing ? "bg-black text-green-300" : "bg-green-400 text-black"}`}
-        >
+          ${isEditing ? "bg-black text-green-300" : "bg-green-400 text-black"}`}>
           {/* Heading */}
           <div className="flex justify-between items-center w-full mb-4">
-            <h2
-              className={`text-3xl font-extrabold tracking-widest ${
-                isEditing ? "text-green-400" : "text-black"
-              }`}
-            >
+            <h2 className={`text-3xl font-extrabold tracking-widest ${isEditing ? "text-green-400" : "text-black"}`}>
               Profile
             </h2>
             <button
@@ -117,10 +105,7 @@ export default function Profile() {
           {error && <p className="text-red-500 text-center">{error}</p>}
 
           {/* Form */}
-          <form
-            onSubmit={handleUpdate}
-            className="w-full flex flex-col gap-5 mt-2 mb-4"
-          >
+          <form onSubmit={handleUpdate} className="w-full flex flex-col gap-5 mt-2 mb-4">
             {[
               { label: "Username", key: "userName" },
               { label: "Email", key: "email" },
@@ -129,11 +114,7 @@ export default function Profile() {
               { label: "Sex", key: "sex" },
             ].map((field) => (
               <div key={field.key} className="flex flex-col">
-                <label
-                  className={`mb-1 ${
-                    isEditing ? "text-green-300" : "text-black font-semibold"
-                  }`}
-                >
+                <label className={`mb-1 ${isEditing ? "text-green-300" : "text-black font-semibold"}`}>
                   {field.label}
                 </label>
                 <input

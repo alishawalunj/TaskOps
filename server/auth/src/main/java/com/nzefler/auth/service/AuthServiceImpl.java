@@ -79,7 +79,6 @@ public class AuthServiceImpl implements AuthService {
                 + "&redirect_uri=" + googleRedirectUri
                 + "&response_type=code"
                 + "&scope=openid%20email%20profile";
-        System.out.println(url);
         return new OAuthRedirectUrlResponse(url);
     }
 
@@ -89,7 +88,6 @@ public class AuthServiceImpl implements AuthService {
                 + "?client_id=" + githubClientId
                 + "&redirect_uri=" + githubRedirectUri
                 + "&scope=read:user%20user:email";
-        System.out.println(url);
         return new OAuthRedirectUrlResponse(url);
     }
 

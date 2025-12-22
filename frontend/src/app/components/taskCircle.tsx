@@ -71,13 +71,7 @@ export default function TaskCircle(task: Task) {
 
   return (
     <div
-      onClick={handleClick}
-      className={`w-80 h-80 rounded-full border-4 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transform transition-all ${
-        isCompleted
-          ? "bg-green-400 border-green-600 text-black"
-          : "bg-black border-green-400 text-green-300"
-      }`}
-    >
+      onClick={handleClick} className={`w-80 h-80 rounded-full border-4 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transform transition-all ${isCompleted ? "bg-green-400 border-green-600 text-black" : "bg-black border-green-400 text-green-300"}`}>
       <h2 className="text-2xl font-bold">{task.name}</h2>
       <p className="text-center px-4">{task.description}</p>
       <p className="mt-4 flex mb-5 items-center">

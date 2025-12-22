@@ -31,13 +31,11 @@ public class AuthResolver {
 
     @QueryMapping
     public OAuthRedirectUrlResponse getGoogleRedirectUrl(){
-        System.out.println("In google Redirect resolver");
         return authService.buildGoogleRedirectUrl();
     }
 
     @QueryMapping
     public OAuthRedirectUrlResponse getGithubRedirectUrl(){
-        System.out.println("In github Redirect resolver");
         return authService.buildGithubRedirectUrl();
     }
 }

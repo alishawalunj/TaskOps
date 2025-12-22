@@ -143,7 +143,6 @@ const resolvers = {
           }
         }
       `;
-      console.log("In github redirect url");
       const res = await request(SPRING_USER_URL, query, {});
       return res.getGithubRedirectUrl;
     },

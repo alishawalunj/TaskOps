@@ -41,11 +41,7 @@ export default function History() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col relative overflow-x-hidden">
-      <button
-        type="button"
-        onClick={toggleSidebar}
-        className="absolute top-4 left-4 z-50 text-green-400 hover:text-green-600 focus:outline-none"
-      >
+      <button type="button" onClick={toggleSidebar} className="absolute top-4 left-4 z-50 text-green-400 hover:text-green-600 focus:outline-none">
         <CiMenuBurger className="w-12 h-6" />
       </button>
 
