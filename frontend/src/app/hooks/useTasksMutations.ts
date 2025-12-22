@@ -16,7 +16,7 @@ export const useTaskMutations = () => {
     isCreatingRef.current = true;
     try{
       const now = new Date().toISOString().split('T')[0];
-      const payload = { ...taskData, date: now, createdAt: now, updatedAt: now };
+      const payload = { ...taskData, createdAt: now, updatedAt: now };
       const res = await createTaskMutation({ variables: { task: payload } });
       return res.data;
     }finally {

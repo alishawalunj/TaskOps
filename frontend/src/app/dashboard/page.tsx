@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { CiMenuBurger } from "react-icons/ci";
 import TaskCircle from "../components/taskCircle";
 import SideBar from "../components/SideBar";
@@ -26,6 +26,8 @@ export default function Dashboard() {
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
+  const dateRef = useRef<HTMLInputElement>(null);
+
 
   useEffect(() => {
     const storedId = localStorage.getItem("userId");
@@ -46,26 +48,33 @@ export default function Dashboard() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
-    setNewTask({
-      ...newTask,
-      [name]: type === "number" ? Number(value) : value,
-    });
-  };
+    setNewTask((prev) => ({
+    ...prev,
+    [name]: type === "number" ? Number(value) : value,
+  }));
+};
 
   const handleCreateTask = async () => {
     if (!userId || creating) return;
-    
+    const selectedDate = dateRef.current?.value;
+
+    if (!selectedDate) {
+      alert("Please select a date");
+      return;
+    }
     setCreating(true);
     const taskToSend: NewTaskDTO = {
       ...newTask,
       userId,
       status: newTask.status.toUpperCase(),
-      date: newTask.date || new Date().toISOString().split("T")[0],
+      date: selectedDate,
       createdAt: new Date().toISOString().split("T")[0],
       updatedAt: new Date().toISOString().split("T")[0],
     };
 
     try {
+      console.log("Submitting date:", newTask.date);
+
       const created = await createTask(taskToSend);
       if (!created) return;
 
@@ -108,11 +117,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-black flex flex-col relative overflow-x-hidden">
-      <button
-        type="button"
-        onClick={toggleSidebar}
-        className="absolute top-4 left-4 z-50 text-green-400 hover:text-green-600 focus:outline-none"
-      >
+      <button type="button" onClick={toggleSidebar} className="absolute top-4 left-4 z-50 text-green-400 hover:text-green-600 focus:outline-none">
         <CiMenuBurger className="w-12 h-6" />
       </button>
 
@@ -121,10 +126,7 @@ export default function Dashboard() {
       <div className={`transition-all duration-300 ${isSidebarOpen ? "ml-64" : "ml-0"} p-10`}>
         <div className="flex justify-between items-center">
           <h1 className="text-5xl font-bold text-green-400 py-10">Your today's tasks</h1>
-          <button
-            onClick={toggleModal}
-            className="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600"
-          >
+          <button onClick={toggleModal} className="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600">
             + Add Task
           </button>
         </div>
@@ -189,6 +191,7 @@ export default function Dashboard() {
                 className="p-2 border rounded"
               />
               <input
+                ref={dateRef}
                 type="date"
                 name="date"
                 value={newTask.date}
