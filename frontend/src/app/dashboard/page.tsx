@@ -73,8 +73,6 @@ export default function Dashboard() {
     };
 
     try {
-      console.log("Submitting date:", newTask.date);
-
       const created = await createTask(taskToSend);
       if (!created) return;
 
@@ -127,7 +125,7 @@ export default function Dashboard() {
         <div className="flex justify-between items-center">
           <h1 className="text-5xl font-bold text-green-400 py-10">Your today's tasks</h1>
           <button onClick={toggleModal} className="bg-green-500 text-black px-4 py-2 rounded hover:bg-green-600">
-            + Add Task
+            + Add / Schedule task
           </button>
         </div>
 

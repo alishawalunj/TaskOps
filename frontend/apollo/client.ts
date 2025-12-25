@@ -6,15 +6,6 @@ const httpLink = new HttpLink({ uri: 'http://localhost:4000/graphql' });
 const authLink = new ApolloLink((operation, forward) => {
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('userId');
-  console.log('client start *****************');
-  console.log('[Apollo Client] Retrieved token:', token);
-  console.log('[Apollo Client] User ID:', userId);
-  console.log('[Apollo Client] GraphQL operation:', {
-    name: operation.operationName,
-    query: operation.query.loc?.source.body,
-    variables: operation.variables,
-  });
-  console.log('client end *****************');
   operation.setContext({
     headers: {
       Authorization: token ? `Bearer ${token}` : '',

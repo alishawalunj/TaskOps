@@ -1,6 +1,7 @@
 package com.nzefler.task.resolver;
 
 import com.nzefler.task.dto.NewTaskDTO;
+import com.nzefler.task.dto.TaskAnalyticsDTO;
 import com.nzefler.task.dto.TaskRequestDTO;
 import com.nzefler.task.dto.TaskResponseDTO;
 import com.nzefler.task.service.TaskService;
@@ -71,5 +72,11 @@ public class TaskResolver {
     @QueryMapping
     public List<TaskResponseDTO> getAllCurrentTasks(@Argument Long userId){
         return taskService.findAllCurrentTasks(userId);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @QueryMapping
+    public TaskAnalyticsDTO getTaskAnalytics(@Argument Long userId){
+        return taskService.getTaskAnalytics(userId);
     }
 }

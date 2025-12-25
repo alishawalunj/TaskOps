@@ -37,6 +37,29 @@ type TaskResponseDTO {
     updatedAt: Date!
 }
 
+type CompletionOverview {
+    completed: Int!
+    pending: Int!
+}
+
+type OnTimeStats {
+    onTime: Int!
+    overdue: Int!
+}
+
+type ScatterPoint {
+    taskId: ID!
+    plannedDuration: Int!
+    actualCompletionDays: Int!
+}
+
+type TaskAnalyticsDTO {
+    completionOverview: CompletionOverview!
+    onTimeStats: OnTimeStats!
+    scatterData: [ScatterPoint!]!
+}
+
+
 # --- QUERIES ---
 
 type Query {
@@ -45,6 +68,7 @@ type Query {
     getAllPreviousTasks(userId: ID!): [TaskResponseDTO!]!
     getAllUpcomingTasks(userId: ID!): [TaskResponseDTO!]!
     getAllCurrentTasks(userId: ID!): [TaskResponseDTO!]!
+    getTaskAnalytics(userId: ID!): TaskAnalyticsDTO!
 }
 
 # --- MUTATIONS ---

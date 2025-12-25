@@ -6,8 +6,9 @@ import {
   GET_ALL_CURRENT_TASKS,
   GET_ALL_PREVIOUS_TASKS,
   GET_ALL_UPCOMING_TASKS,
+  GET_TASK_ANALYTICS,
 } from '../graphql/queries';
-import { TaskResponseDTO } from '../graphql/types';
+import { TaskResponseDTO,  TaskAnalyticsDTO} from '../graphql/types';
 import { useMemo } from 'react';
 
 
@@ -50,4 +51,12 @@ export const useUpcomingTasks = (userId: string) => {
     { variables: { userId: userId.toString() }, fetchPolicy: 'network-only', skip: !userId }
   );
   return { upcomingTasks: data?.getAllUpcomingTasks ?? [], loading, error, refetch };
+};
+
+export const useTaskAnalytics = (userId: string) => {
+  const { data, loading, error, refetch } = useQuery<{ getTaskAnalytics: TaskAnalyticsDTO }, { userId: string }>(
+    GET_TASK_ANALYTICS,
+    { variables: { userId: userId.toString()}, fetchPolicy: 'network-only', skip: !userId }
+  );
+  return { taskAnalytics: data?.getTaskAnalytics, loading, error, refetch };
 };

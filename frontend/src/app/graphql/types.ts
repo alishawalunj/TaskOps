@@ -81,6 +81,24 @@ export interface TaskResponseDTO {
   updatedAt: string;
 }
 
-export interface OAuthRedirectUrlResponse {
-  url: string;
+export interface CompletionOverview {
+  completed: number;
+  pending: number;
+}
+
+export interface OnTimeStats {
+  onTime: number;
+  overdue: number;
+}
+
+export interface ScatterPoint {
+  taskId: string;
+  plannedDuration: number;
+  actualCompletionDays: number;
+}
+
+export interface TaskAnalyticsDTO {
+  completionOverview: CompletionOverview;
+  onTimeStats: OnTimeStats;
+  scatterData: ScatterPoint[];
 }

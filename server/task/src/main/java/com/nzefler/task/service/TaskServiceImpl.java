@@ -1,14 +1,15 @@
 package com.nzefler.task.service;
 
-import com.nzefler.task.dto.NewTaskDTO;
-import com.nzefler.task.dto.TaskRequestDTO;
-import com.nzefler.task.dto.TaskResponseDTO;
+import com.nzefler.task.dto.*;
 import com.nzefler.task.entity.Task;
 import com.nzefler.task.mapper.TaskMapper;
 import com.nzefler.task.repository.TaskRepository;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 @Service
@@ -98,5 +99,67 @@ public class TaskServiceImpl implements TaskService{
         LocalDate today = LocalDate.now();
         List<Task> currentTasks = tasks.stream().filter(task -> task.getDate() != null && task.getDate().isEqual(today)).collect(Collectors.toList());
         return currentTasks.stream().map(mapper::toDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public TaskAnalyticsDTO getTaskAnalytics(Long userId) {
+        try{
+            List<Task> usersTaskList = taskRepository.findByUserId(userId);
+            long completedCount = 0;
+            long pendingCount = 0;
+            long onTimeCount = 0;
+            long overDueCount = 0;
+            List<ScatterPoint> scatterPoints = new ArrayList<>();
+            LocalDate today = LocalDate.now();
+            LocalDate createdAt;
+            LocalDate updatedAt;
+            LocalDate dueDate;
+            for(Task task: usersTaskList){
+                createdAt = task.getCreatedAt();
+                updatedAt = task.getUpdatedAt();
+                dueDate = createdAt.plusDays(task.getDuration());
+
+                if("COMPLETED".equals(task.getStatus())){
+                    completedCount++;
+                }else{
+                    pendingCount++;
+                }
+
+                if("COMPLETED".equals(task.getStatus())){
+                    if(!updatedAt.isAfter(dueDate)){
+                        onTimeCount++;
+                    }else{
+                        overDueCount++;
+                    }
+
+                    long actualDays = ChronoUnit.DAYS.between(createdAt, updatedAt);
+                    ScatterPoint point = new ScatterPoint();
+                    point.setTaskId(task.getTaskId());
+                    point.setPlannedDuration(task.getDuration());
+                    point.setActualCompletionDays(actualDays);
+                    scatterPoints.add(point);
+                }else{
+                    if(today.isAfter(dueDate)){
+                        overDueCount++;
+                    }
+                }
+            }
+            CompletionOverview completionOverview = new CompletionOverview();
+            completionOverview.setCompleted(completedCount);
+            completionOverview.setPending(pendingCount);
+
+            OnTimeStats onTimeStats = new OnTimeStats();
+            onTimeStats.setOnTime(onTimeCount);
+            onTimeStats.setOverdue(overDueCount);
+
+            TaskAnalyticsDTO analyticsDTO = new TaskAnalyticsDTO();
+            analyticsDTO.setCompletionOverview(completionOverview);
+            analyticsDTO.setOnTimeStats(onTimeStats);
+            analyticsDTO.setScatterData(scatterPoints);
+
+            return analyticsDTO;
+        }catch (Exception e){
+            throw new RuntimeException("Failed to calculate task analytics for userId: " + userId, e);
+        }
     }
 }

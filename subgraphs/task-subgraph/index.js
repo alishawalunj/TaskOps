@@ -44,12 +44,35 @@ type TaskResponseDTO @key(fields: "taskId") {
     updatedAt: Date!
   }
 
+  type CompletionOverview {
+      completed: Int!
+      pending: Int!
+  }
+
+  type OnTimeStats {
+      onTime: Int!
+      overdue: Int!
+  }
+
+  type ScatterPoint {
+      taskId: ID!
+      plannedDuration: Int!
+      actualCompletionDays: Int!
+  }
+
+  type TaskAnalyticsDTO {
+      completionOverview: CompletionOverview!
+      onTimeStats: OnTimeStats!
+      scatterData: [ScatterPoint!]!
+  }
+
   type Query {
     getAllTasks: [TaskResponseDTO!]!
     getTaskById(taskId: ID!): TaskResponseDTO
     getAllPreviousTasks(userId: ID!): [TaskResponseDTO!]!
     getAllUpcomingTasks(userId: ID!): [TaskResponseDTO!]!
     getAllCurrentTasks(userId: ID!): [TaskResponseDTO!]!
+    getTaskAnalytics(userId: ID!): TaskAnalyticsDTO!
   }
 
   type Mutation {
@@ -170,7 +193,39 @@ const resolvers = {
       });
       return res.getAllCurrentTasks;
     },
+
+    getTaskAnalytics: async (_, { userId }, context) => {
+      const query = gqlRequest`
+        query ($userId: ID!) {
+          getTaskAnalytics(userId: $userId) {
+            completionOverview {
+              completed
+              pending
+            }
+            onTimeStats {
+              onTime
+              overdue
+            }
+            scatterData {
+              taskId
+              plannedDuration
+              actualCompletionDays
+            }
+          }
+        }
+      `;
+      const res = await request(SPRING_TASK_URL, query, { userId }, {
+        Authorization: context.token || '' ,
+      });
+      return {
+        completionOverview: res.getTaskAnalytics.completionOverview,
+        onTimeStats: res.getTaskAnalytics.onTimeStats,
+        scatterData: res.getTaskAnalytics.scatterData,
+      };
+    },
   },
+
+  
 
   Mutation: {
     createTask: async (_, { task }, context) => {

@@ -77,6 +77,26 @@ export const GET_ALL_PREVIOUS_TASKS = gql`
   }
 `;
 
+export const GET_TASK_ANALYTICS = gql`
+  query GetTaskAnalytics($userId: ID!) {
+    getTaskAnalytics(userId: $userId) {
+      completionOverview {
+        completed
+        pending
+      }
+      onTimeStats {
+        onTime
+        overdue
+      }
+      scatterData {
+        taskId
+        plannedDuration
+        actualCompletionDays
+      }
+    }
+  }
+`;
+
 export const GET_ALL_UPCOMING_TASKS = gql`
   query GetAllUpcomingTasks($userId: ID!) {
     getAllUpcomingTasks(userId: $userId) {
