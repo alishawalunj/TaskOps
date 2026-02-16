@@ -19,6 +19,8 @@ public class AuthClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
+        System.out.println("Token received in AuthClient: " + token);
+
         try {
             ResponseEntity<UserTokenDTO> response = restTemplate.exchange(
                     authServiceUrl, HttpMethod.POST, entity, UserTokenDTO.class

@@ -55,32 +55,23 @@ export const DELETE_USER = gql`
 
 //task mutations
 export const CREATE_TASK = gql`
-  mutation CreateTask($task: NewTaskDTO!) {
+  mutation CreateTask($task: NewTaskRequestDTO!) {
     createTask(task: $task) {
       userId
       name
       description
       status
-      duration
-      date
-      createdAt
-      updatedAt
+      endDate
     }
   }
 `;
 
 export const UPDATE_TASK = gql`
-  mutation UpdateTask($task: TaskRequestDTO!) {
+  mutation UpdateTask($task: UpdateTaskRequestDTO!) {
     updateTask(task: $task) {
       taskId
       userId
-      name
-      description
       status
-      duration
-      date
-      createdAt
-      updatedAt
     }
   }
 `;

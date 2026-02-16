@@ -46,27 +46,18 @@ export interface UserResponseDTO {
 
 //Task service
 
-export interface NewTaskDTO {
+export interface NewTaskRequestDTO {
   userId: string;
   name: string;
   description: string;
   status: string;
-  duration?: number;
-  date: string;
-  createdAt: string;
-  updatedAt: string;
+  endDate: string;
 }
 
-export interface TaskRequestDTO {
+export interface UpdateTaskRequestDTO {
   taskId: string;
   userId: string;
-  name: string;
-  description: string;
   status: string;
-  duration?: number;
-  date: string;
-  createdAt: string;
-  updatedAt: string;
 }
 
 export interface TaskResponseDTO {
@@ -75,10 +66,7 @@ export interface TaskResponseDTO {
   name: string;
   description: string;
   status: string;
-  duration?: number;
-  date: string;
-  createdAt: string;
-  updatedAt: string;
+  endDate: string;
 }
 
 export interface CompletionOverview {

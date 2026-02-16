@@ -9,27 +9,18 @@ const SPRING_TASK_URL = 'http://localhost:8082/graphql';
 const typeDefs = gql`
   scalar Date
 
-  input TaskRequestDTO {
+  input UpdateTaskRequestDTO {
     taskId: ID
     userId: ID!
-    name: String!
-    description: String!
     status: String!
-    duration: Int!
-    date: Date!
-    createdAt: Date
-    updatedAt: Date
   }
 
-input NewTaskDTO {
+input NewTaskRequestDTO {
     userId: ID!
     name: String!
     description: String!
     status: String!
-    duration: Int!
-    date: Date!
-    createdAt: Date
-    updatedAt: Date
+    endDate: Date!
   }
 
 type TaskResponseDTO @key(fields: "taskId") {
@@ -38,10 +29,7 @@ type TaskResponseDTO @key(fields: "taskId") {
     name: String!
     description: String!
     status: String!
-    duration: Int!
-    date: Date!
-    createdAt: Date!
-    updatedAt: Date!
+    endDate: Date!
   }
 
   type CompletionOverview {
@@ -76,8 +64,8 @@ type TaskResponseDTO @key(fields: "taskId") {
   }
 
   type Mutation {
-    createTask(task: NewTaskDTO!): TaskResponseDTO!
-    updateTask(task: TaskRequestDTO!): TaskResponseDTO!
+    createTask(task: NewTaskRequestDTO!): TaskResponseDTO!
+    updateTask(task: UpdateTaskRequestDTO!): TaskResponseDTO!
     deleteTask(taskId: ID!): Boolean!
   }
 `;
@@ -93,10 +81,7 @@ const resolvers = {
             name
             description
             status
-            duration
-            date
-            createdAt
-            updatedAt
+            endDate
           }
         }
       `;
@@ -115,10 +100,7 @@ const resolvers = {
             name
             description
             status
-            duration
-            date
-            createdAt
-            updatedAt
+            endDate
           }
         }
       `;
@@ -137,10 +119,7 @@ const resolvers = {
             name
             description
             status
-            duration
-            date
-            createdAt
-            updatedAt
+            endDate
           }
         }
       `;
@@ -159,10 +138,7 @@ const resolvers = {
             name
             description
             status
-            duration
-            date
-            createdAt
-            updatedAt
+            endDate
           }
         }
       `;
@@ -181,10 +157,7 @@ const resolvers = {
             name
             description
             status
-            duration
-            date
-            createdAt
-            updatedAt
+            endDate
           }
         }
       `;
@@ -230,16 +203,13 @@ const resolvers = {
   Mutation: {
     createTask: async (_, { task }, context) => {
       const mutation = gqlRequest`
-        mutation ($task: NewTaskDTO!) {
+        mutation ($task: NewTaskRequestDTO!) {
           createTask(task: $task) {
             userId
             name
             description
             status
-            duration
-            date
-            createdAt
-            updatedAt
+            endDate
           }
         }
       `;
@@ -251,17 +221,11 @@ const resolvers = {
 
     updateTask: async (_, { task }, context) => {
       const mutation = gqlRequest`
-        mutation ($task: TaskRequestDTO!) {
+        mutation ($task: UpdateTaskRequestDTO!) {
           updateTask(task: $task) {
             taskId
             userId
-            name
-            description
             status
-            duration
-            date
-            createdAt
-            updatedAt
           }
         }
       `;

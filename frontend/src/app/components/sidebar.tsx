@@ -16,21 +16,21 @@ export default function SideBar({ isOpen, toggleSidebar }: SideBarProps) {
         router.push(path);
     }
     return (
-    <div className={`fixed top-0 left-0 h-full w-64 bg-green-400 text-black p-8 shadow-lg transform-gpu transition-transform duration-300 ease-in-out z-40 ${isOpen ? "translate-x-0" : "translate-x-[-100%]"}`}>
+    <div className={`fixed top-0 left-0 h-full w-64 bg-green-400 text-black p-6 shadow-lg transform-gpu transition-transform duration-300 ease-in-out z-40 ${ isOpen ? "translate-x-0" : "translate-x-[-100%]"}`}>
         <h2 className="text-2xl font-bold mb-4 flex justify-between items-center">
-            Sidebar
+            Menu
             <button onClick={toggleSidebar} className="text-black hover:text-green-700 text-xl font-bold">
             ✕
             </button>
         </h2>
 
         <ul>
-            <li onClick={() => handleNavigation("/dashboard")} className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">Dashboard</li>
-            <li onClick={() => handleNavigation("/profile")} className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">Profile</li>
-            <li onClick={() => handleNavigation("/visualization")} className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">Visualization</li>
-            <li onClick={() => handleNavigation("/history")} className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">History</li>
-            <li onClick={() => handleNavigation("/upcoming")} className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">Upcoming</li>
-            <li onClick={() => { logout(); toggleSidebar(); }}  className="mb-4 hover:text-green-400 hover:bg-black cursor-pointer">Logout</li>
+            <li onClick={() => handleNavigation("/dashboard")} className="hover:text-green-400 hover:bg-black cursor-pointer h-10 rounded-lg p-2">Dashboard</li>
+            <li onClick={() => handleNavigation("/profile")} className="hover:text-green-400 hover:bg-black cursor-pointer h-10 rounded-lg p-2">Profile</li>
+            <li onClick={() => handleNavigation("/visualization")} className="hover:text-green-400 hover:bg-black cursor-pointer h-10 rounded-lg p-2">Visualization</li>
+            <li onClick={() => handleNavigation("/history")} className="hover:text-green-400 hover:bg-black cursor-pointer h-10 rounded-lg p-2">History</li>
+            <li onClick={() => handleNavigation("/upcoming")} className="hover:text-green-400 hover:bg-black cursor-pointer h-10 rounded-lg p-2">Upcoming</li>
+            <li onClick={() => { logout(); toggleSidebar(); }}  className="hover:text-green-400 hover:bg-black cursor-pointer h-10 rounded-lg p-2">Logout</li>
         </ul>
         </div>
     );

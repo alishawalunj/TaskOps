@@ -1,26 +1,17 @@
 scalar Date
 # --- INPUT TYPES ---
-input TaskRequestDTO {
+input UpdateTaskRequestDTO {
     taskId: ID
     userId: ID!
-    name: String!
-    description: String!
     status: String!
-    duration: Int!
-    date: Date!
-    createdAt: Date
-    updatedAt: Date
 }
 
-input NewTaskDTO {
+input NewTaskRequestDTO {
     userId: ID!
     name: String!
     description: String!
     status: String!
-    duration: Int!
-    date: Date!
-    createdAt: Date
-    updatedAt: Date
+    endDate: Date!
 }
 
 # --- OUTPUT TYPES ---
@@ -31,10 +22,7 @@ type TaskResponseDTO {
     name: String!
     description: String!
     status: String!
-    duration: Int!
-    date: Date!
-    createdAt: Date!
-    updatedAt: Date!
+    endDate: Date!
 }
 
 type CompletionOverview {
@@ -74,7 +62,7 @@ type Query {
 # --- MUTATIONS ---
 
 type Mutation {
-    createTask(task: NewTaskDTO!): TaskResponseDTO!
-    updateTask(task: TaskRequestDTO!): TaskResponseDTO!
+    createTask(task: NewTaskRequestDTO!): TaskResponseDTO!
+    updateTask(task: UpdateTaskRequestDTO!): TaskResponseDTO!
     deleteTask(taskId: ID!): Boolean!
 }

@@ -4,13 +4,13 @@ import { CiMenuBurger } from "react-icons/ci";
 import TaskCircle from "../components/taskCircle";
 import SideBar from "../components/SideBar";
 import { useUpcomingTasks } from '../hooks/useTasksQueries';
-import { TaskResponseDTO, NewTaskDTO } from '../graphql/types';
+import { TaskResponseDTO, NewTaskRequestDTO } from '../graphql/types';
 
 export default function Upcoming() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [tasks, setTasks] = useState<TaskResponseDTO[]>([]);
-  const [newTask, setNewTask] = useState<NewTaskDTO>({
+  const [newTask, setNewTask] = useState<NewTaskRequestDTO>({
     name: "",
     description: "",
     status: "Pending",
@@ -42,7 +42,7 @@ export default function Upcoming() {
   return (
     <div className="min-h-screen bg-black flex flex-col relative overflow-x-hidden">
       <button type="button" onClick={toggleSidebar} className="absolute top-4 left-4 z-50 text-green-400 hover:text-green-600 focus:outline-none">
-        <CiMenuBurger className="w-12 h-6" />
+        {isSidebarOpen ? null : <CiMenuBurger className="w-12 h-6" />}
       </button>
 
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />

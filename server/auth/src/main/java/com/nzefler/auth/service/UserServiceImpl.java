@@ -36,8 +36,10 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserResponseDTO saveUser(NewUserDTO newUserDTO){
+        System.out.println("Create user initiated with info" + newUserDTO);
         User newUser = mapper.toEntity(newUserDTO);
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        System.out.println("Create user completed");
         return mapper.toDTO(userRepository.save(newUser));
     }
 

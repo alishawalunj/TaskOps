@@ -5,23 +5,21 @@ import TaskCircle from "../components/taskCircle";
 import SideBar from "../components/SideBar";
 import { useCurrentTasks } from '../hooks/useTasksQueries';
 import { useTaskMutations } from '../hooks/useTasksMutations';
-import { TaskResponseDTO, NewTaskDTO } from '../graphql/types';
+import { TaskResponseDTO, NewTaskRequestDTO } from '../graphql/types';
 
 export default function Dashboard() {
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tasks, setTasks] = useState<TaskResponseDTO[]>([]);
   const [creating, setCreating] = useState(false);
-  const [newTask, setNewTask] = useState<NewTaskDTO>({
+  const [newTask, setNewTask] = useState<NewTaskRequestDTO>({
     name: "",
     description: "",
     status: "Pending",
-    duration: 0,
-    date: "",
+    endDate: "",
     userId: "",
-    createdAt: "",
-    updatedAt: "",
   });
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
@@ -63,13 +61,11 @@ export default function Dashboard() {
       return;
     }
     setCreating(true);
-    const taskToSend: NewTaskDTO = {
+    const taskToSend: NewTaskRequestDTO = {
       ...newTask,
       userId,
       status: newTask.status.toUpperCase(),
-      date: selectedDate,
-      createdAt: new Date().toISOString().split("T")[0],
-      updatedAt: new Date().toISOString().split("T")[0],
+      endDate: selectedDate,
     };
 
     try {
@@ -84,11 +80,8 @@ export default function Dashboard() {
         name: '',
         description: '',
         status: 'Pending',
-        duration: 0,
-        date: '',
+        endDate: '',
         userId,
-        createdAt: '',
-        updatedAt: '',
       });
     } catch (err) {
       alert("Failed to create task");
@@ -103,11 +96,8 @@ export default function Dashboard() {
       name: '',
       description: '',
       status: 'Pending',
-      duration: 0,
-      date: '',
+      endDate: '',
       userId: userId || '',
-      createdAt: '',
-      updatedAt: '',
     });
   };
 
@@ -116,7 +106,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-black flex flex-col relative overflow-x-hidden">
       <button type="button" onClick={toggleSidebar} className="absolute top-4 left-4 z-50 text-green-400 hover:text-green-600 focus:outline-none">
-        <CiMenuBurger className="w-12 h-6" />
+        {isSidebarOpen ? null : <CiMenuBurger className="w-12 h-6" />}
       </button>
 
       <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
@@ -152,11 +142,11 @@ export default function Dashboard() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-          <div className="bg-white p-6 rounded-lg w-96 relative max-h-[90vh] overflow-auto">
-            <h2 className="text-2xl font-bold mb-4">Create New Task</h2>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-md z-50 ">
+          <div className="bg-black p-6 rounded-lg border border-green-500 w-96 relative max-h-[90vh] overflow-auto">
+            <h2 className="text-2xl text-green-400 font-bold mb-4">Create New Task</h2>
 
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 text-green-300">
               <input
                 name="name"
                 value={newTask.name}
@@ -171,29 +161,25 @@ export default function Dashboard() {
                 placeholder="Description"
                 className="p-2 border rounded"
               />
-              <select
-                name="status"
-                value={newTask.status}
-                onChange={handleInputChange}
-                className="p-2 border rounded w-full appearance-none focus:outline-none focus:ring-2 focus:ring-green-400 bg-white text-gray-700"
-              >
-                <option value="Pending">Pending</option>
-                <option value="Completed">Completed</option>
-              </select>
-              <input
-                name="duration"
-                type="number"
-                value={newTask.duration}
-                onChange={handleInputChange}
-                placeholder="Duration (hours)"
-                className="p-2 border rounded"
-              />
+              <div className="relative">
+                <select
+                  name="status"
+                  value={newTask.status}
+                  onChange={handleInputChange}
+                  className="p-2 border border-green-500 bg-black text-green-300 rounded-xl w-full appearance-none focus:outline-none focus:ring-2 focus:ring-green-400"
+                >
+                  <option value="Pending">Pending</option>
+                  <option value="Completed">Completed</option>
+                </select>
+                <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-green-400 text-sm"> ▼ </span>
+              </div>
               <input
                 ref={dateRef}
                 type="date"
-                name="date"
-                value={newTask.date}
+                name="endDate"
+                value={newTask.endDate}
                 onChange={handleInputChange}
+                placeholder="Expected end date"
                 className="p-2 border rounded"
               />
             </div>

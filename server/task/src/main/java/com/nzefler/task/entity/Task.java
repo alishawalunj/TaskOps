@@ -3,6 +3,8 @@ package com.nzefler.task.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
+import java.time.Instant;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -17,10 +19,9 @@ public class Task {
     private String name;
     private String description;
     private String status;
-    private long duration;
-    private LocalDate date;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    private LocalDate endDate;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     public long getTaskId() {
         return taskId;
@@ -62,35 +63,41 @@ public class Task {
         this.status = status;
     }
 
-    public long getDuration() {
-        return duration;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
-    public void setDuration(long duration) {
-        this.duration = duration;
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalDate getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDate createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDate getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDate updatedAt) {
+    public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "taskId=" + taskId +
+                ", userId=" + userId +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                ", endDate=" + endDate +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
     }
 }

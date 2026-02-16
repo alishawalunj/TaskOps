@@ -36,10 +36,7 @@ export const GET_ALL_TASKS = gql`
       name
       description
       status
-      duration
-      date
-      createdAt
-      updatedAt
+      endDate
     }
   }
 `;
@@ -53,10 +50,7 @@ export const GET_TASK_BY_ID = gql`
       name
       description
       status
-      duration
-      date
-      createdAt
-      updatedAt
+      endDate
     }
   }
 `;
@@ -69,10 +63,7 @@ export const GET_ALL_PREVIOUS_TASKS = gql`
       name
       description
       status
-      duration
-      date
-      createdAt
-      updatedAt
+      endDate
     }
   }
 `;
@@ -105,10 +96,7 @@ export const GET_ALL_UPCOMING_TASKS = gql`
       name
       description
       status
-      duration
-      date
-      createdAt
-      updatedAt
+      endDate
     }
   }
 `;
@@ -121,10 +109,7 @@ export const GET_ALL_CURRENT_TASKS = gql`
       name
       description
       status
-      duration
-      date
-      createdAt
-      updatedAt
+      endDate
     }
   }
 `;

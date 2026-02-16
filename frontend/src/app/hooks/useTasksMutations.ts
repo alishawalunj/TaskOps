@@ -2,7 +2,7 @@
 import { useRef } from 'react';
 import { useMutation } from '@apollo/client/react';
 import { CREATE_TASK, UPDATE_TASK, DELETE_TASK } from '../graphql/mutations';
-import { TaskRequestDTO, NewTaskDTO } from '../graphql/types';
+import { UpdateTaskRequestDTO, NewTaskRequestDTO } from '../graphql/types';
 
 export const useTaskMutations = () => {
   const [createTaskMutation] = useMutation(CREATE_TASK);
@@ -11,12 +11,11 @@ export const useTaskMutations = () => {
 
   const isCreatingRef = useRef(false);
 
-  const createTask = async (taskData: Partial<NewTaskDTO>) => {
+  const createTask = async (taskData: Partial<NewTaskRequestDTO>) => {
     if (isCreatingRef.current) return null;
     isCreatingRef.current = true;
     try{
-      const now = new Date().toISOString().split('T')[0];
-      const payload = { ...taskData, createdAt: now, updatedAt: now };
+      const payload = { ...taskData};
       const res = await createTaskMutation({ variables: { task: payload } });
       return res.data;
     }finally {
@@ -24,7 +23,7 @@ export const useTaskMutations = () => {
     }  
   };
 
-  const updateTask = async (taskData: Partial<TaskRequestDTO>) => {
+  const updateTask = async (taskData: Partial<UpdateTaskRequestDTO>) => {
     const res = await updateTaskMutation({ variables: { task: taskData } });
     return res.data;
   };

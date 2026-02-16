@@ -4,14 +4,15 @@ import com.nzefler.task.dto.*;
 import com.nzefler.task.entity.Task;
 import com.nzefler.task.mapper.TaskMapper;
 import com.nzefler.task.repository.TaskRepository;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Service
 public class TaskServiceImpl implements TaskService{
 
@@ -34,9 +35,9 @@ public class TaskServiceImpl implements TaskService{
     }
 
     @Override
-    public TaskResponseDTO saveTask(NewTaskDTO newTaskDTO) {
+    public TaskResponseDTO saveTask(NewTaskRequestDTO newTaskRequestDTO) {
         try {
-            Task newTask = mapper.toEntity(newTaskDTO);
+            Task newTask = mapper.toEntity(newTaskRequestDTO);
             Task savedTask = taskRepository.save(newTask);
             return mapper.toDTO(savedTask);
         } catch (Exception e) {
@@ -45,16 +46,11 @@ public class TaskServiceImpl implements TaskService{
         }
     }
 
-
     @Override
-    public TaskResponseDTO updateTask(TaskRequestDTO taskRequestDTO) {
-        Task existingTask = taskRepository.findById(taskRequestDTO.getTaskId()).orElseThrow(() -> new RuntimeException("Task does not exist"));
-        existingTask.setName(taskRequestDTO.getName());
-        existingTask.setDescription(taskRequestDTO.getDescription());
-        existingTask.setStatus(taskRequestDTO.getStatus());
-        existingTask.setDuration(taskRequestDTO.getDuration());
-        existingTask.setDate(taskRequestDTO.getDate());
-        existingTask.setUpdatedAt(LocalDate.now());
+    public TaskResponseDTO updateTask(UpdateTaskRequestDTO updateTaskRequestDTO) {
+        Task existingTask = taskRepository.findById(updateTaskRequestDTO.getTaskId()).orElseThrow(() -> new RuntimeException("Task does not exist"));
+        existingTask.setStatus(updateTaskRequestDTO.getStatus());
+        existingTask.setUpdatedAt(Instant.now());
         Task updatedTask = taskRepository.save(existingTask);
         return mapper.toDTO(updatedTask);
     }
@@ -75,7 +71,7 @@ public class TaskServiceImpl implements TaskService{
             return List.of();
         }
         LocalDate today = LocalDate.now();
-        List<Task> previousTasks = tasks.stream().filter(task -> task.getDate() != null && task.getDate().isBefore(today)).collect(Collectors.toList());
+        List<Task> previousTasks = tasks.stream().filter(task -> task.getEndDate() != null && task.getEndDate().isBefore(today)).collect(Collectors.toList());
         return previousTasks.stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
@@ -86,7 +82,7 @@ public class TaskServiceImpl implements TaskService{
             return List.of();
         }
         LocalDate today = LocalDate.now();
-        List<Task> upcomingTasks = tasks.stream().filter(task -> task.getDate() != null && task.getDate().isAfter(today)).collect(Collectors.toList());
+        List<Task> upcomingTasks = tasks.stream().filter(task -> task.getEndDate() != null && task.getEndDate().isAfter(today)).collect(Collectors.toList());
         return upcomingTasks.stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
@@ -97,7 +93,7 @@ public class TaskServiceImpl implements TaskService{
             return List.of();
         }
         LocalDate today = LocalDate.now();
-        List<Task> currentTasks = tasks.stream().filter(task -> task.getDate() != null && task.getDate().isEqual(today)).collect(Collectors.toList());
+        List<Task> currentTasks = tasks.stream().filter(task -> task.getEndDate() != null && task.getEndDate().isEqual(today)).collect(Collectors.toList());
         return currentTasks.stream().map(mapper::toDTO).collect(Collectors.toList());
     }
 
@@ -105,41 +101,49 @@ public class TaskServiceImpl implements TaskService{
     public TaskAnalyticsDTO getTaskAnalytics(Long userId) {
         try{
             List<Task> usersTaskList = taskRepository.findByUserId(userId);
+            if(usersTaskList == null || usersTaskList.isEmpty()){
+                return new TaskAnalyticsDTO();
+            }
+
             long completedCount = 0;
             long pendingCount = 0;
             long onTimeCount = 0;
             long overDueCount = 0;
+
             List<ScatterPoint> scatterPoints = new ArrayList<>();
             LocalDate today = LocalDate.now();
-            LocalDate createdAt;
-            LocalDate updatedAt;
-            LocalDate dueDate;
+
             for(Task task: usersTaskList){
-                createdAt = task.getCreatedAt();
-                updatedAt = task.getUpdatedAt();
-                dueDate = createdAt.plusDays(task.getDuration());
+                String status = task.getStatus();
+                LocalDate dueDate = task.getEndDate();
 
-                if("COMPLETED".equals(task.getStatus())){
+                Instant createdInstant = task.getCreatedAt();
+                Instant updatedInstant = task.getUpdatedAt();
+
+                LocalDate createdDate = createdInstant != null ? createdInstant.atZone(java.time.ZoneId.systemDefault()).toLocalDate() : null;
+                LocalDate updatedDate = updatedInstant != null ? updatedInstant.atZone(java.time.ZoneId.systemDefault()).toLocalDate() : null;
+
+                if("COMPLETED".equalsIgnoreCase(status)){
                     completedCount++;
-                }else{
-                    pendingCount++;
-                }
 
-                if("COMPLETED".equals(task.getStatus())){
-                    if(!updatedAt.isAfter(dueDate)){
-                        onTimeCount++;
-                    }else{
-                        overDueCount++;
+                    if(dueDate != null && updatedDate != null){
+                        if(!updatedDate.isAfter(dueDate)){
+                            onTimeCount++;
+                        }else{
+                            overDueCount++;
+                        }
                     }
 
-                    long actualDays = ChronoUnit.DAYS.between(createdAt, updatedAt);
-                    ScatterPoint point = new ScatterPoint();
-                    point.setTaskId(task.getTaskId());
-                    point.setPlannedDuration(task.getDuration());
-                    point.setActualCompletionDays(actualDays);
-                    scatterPoints.add(point);
+                    if(createdDate != null && updatedDate != null){
+                        long actualDays = ChronoUnit.DAYS.between(createdDate, updatedDate);
+                        ScatterPoint point = new ScatterPoint();
+                        point.setTaskId(task.getTaskId());
+                        point.setActualCompletionDays(actualDays);
+                        scatterPoints.add(point);
+                    }
                 }else{
-                    if(today.isAfter(dueDate)){
+                    pendingCount++;
+                    if(dueDate != null && today.isAfter(dueDate)){
                         overDueCount++;
                     }
                 }
@@ -156,7 +160,6 @@ public class TaskServiceImpl implements TaskService{
             analyticsDTO.setCompletionOverview(completionOverview);
             analyticsDTO.setOnTimeStats(onTimeStats);
             analyticsDTO.setScatterData(scatterPoints);
-
             return analyticsDTO;
         }catch (Exception e){
             throw new RuntimeException("Failed to calculate task analytics for userId: " + userId, e);

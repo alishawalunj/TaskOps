@@ -4,16 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskResponseDTO {
+public class UpdateTaskRequestDTO {
     private long taskId;
     private long userId;
-    private String name;
-    private String description;
     private String status;
-    private LocalDate endDate;
 
     public long getTaskId() {
         return taskId;
@@ -31,22 +27,6 @@ public class TaskResponseDTO {
         this.userId = userId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -55,11 +35,4 @@ public class TaskResponseDTO {
         this.status = status;
     }
 
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
 }

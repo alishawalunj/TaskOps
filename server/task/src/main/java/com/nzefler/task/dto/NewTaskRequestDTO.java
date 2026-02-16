@@ -6,15 +6,12 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewTaskDTO {
+public class NewTaskRequestDTO {
     private long userId;
     private String name;
     private String description;
     private String status;
-    private long duration;
-    private LocalDate date;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    private LocalDate endDate;
 
     public long getUserId() {
         return userId;
@@ -48,35 +45,22 @@ public class NewTaskDTO {
         this.status = status;
     }
 
-    public long getDuration() {
-        return duration;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
-    public void setDuration(long duration) {
-        this.duration = duration;
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public LocalDate getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDate createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDate getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDate updatedAt) {
-        this.updatedAt = updatedAt;
+    @Override
+    public String toString() {
+        return "NewTaskRequestDTO{" +
+                "userId=" + userId +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                ", endDate=" + endDate +
+                '}';
     }
 }

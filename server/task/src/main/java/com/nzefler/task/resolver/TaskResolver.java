@@ -1,8 +1,8 @@
 package com.nzefler.task.resolver;
 
-import com.nzefler.task.dto.NewTaskDTO;
+import com.nzefler.task.dto.NewTaskRequestDTO;
 import com.nzefler.task.dto.TaskAnalyticsDTO;
-import com.nzefler.task.dto.TaskRequestDTO;
+import com.nzefler.task.dto.UpdateTaskRequestDTO;
 import com.nzefler.task.dto.TaskResponseDTO;
 import com.nzefler.task.service.TaskService;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -35,9 +35,9 @@ public class TaskResolver {
 
     @PreAuthorize("isAuthenticated()")
     @MutationMapping
-    public TaskResponseDTO createTask(@Argument("task") NewTaskDTO newTaskDTO) {
+    public TaskResponseDTO createTask(@Argument("task") NewTaskRequestDTO newTaskRequestDTO) {
         try {
-            TaskResponseDTO savedTask = taskService.saveTask(newTaskDTO);
+            TaskResponseDTO savedTask = taskService.saveTask(newTaskRequestDTO);
             return savedTask;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create task", e);
@@ -46,8 +46,8 @@ public class TaskResolver {
 
     @PreAuthorize("isAuthenticated()")
     @MutationMapping
-    public TaskResponseDTO updateTask(@Argument("task") TaskRequestDTO taskRequestDTO){
-        return taskService.updateTask(taskRequestDTO);
+    public TaskResponseDTO updateTask(@Argument("task") UpdateTaskRequestDTO updateTaskRequestDTO){
+        return taskService.updateTask(updateTaskRequestDTO);
     }
 
     @PreAuthorize("isAuthenticated()")
