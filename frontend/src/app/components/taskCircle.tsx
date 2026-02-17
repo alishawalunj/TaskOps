@@ -4,7 +4,7 @@ import { IoIosCheckmarkCircle } from "react-icons/io";
 import { RxCrossCircled } from "react-icons/rx";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useTaskMutations } from "../hooks/useTasksMutations";
-import { TaskRequestDTO } from "../graphql/types";
+import { UpdateTaskRequestDTO } from "../graphql/types";
 
 type Task = {
   taskId: string;
@@ -27,26 +27,20 @@ export default function TaskCircle(task: Task) {
     setStatus(task.status);
   }, [task.status]);
 
-  const handleClick = async () => {
-    const newStatus = status === "Completed" ? "Pending" : "Completed";
+  const handleUpdateStatusClick = async () => {
+    const newStatus = status === "COMPLETED" ? "PENDING" : "COMPLETED";
     setStatus(newStatus);
 
     try {
-      const payload: TaskRequestDTO = {
+      const payload: UpdateTaskRequestDTO = {
         taskId: task.taskId,
-        name: task.name,
-        description: task.description,
-        status: newStatus,
-        duration: task.duration || 0,
-        date: task.date || new Date().toISOString().split("T")[0],
         userId: localStorage.getItem("userId") ?? task.userId?.toString() ?? "",
-        createdAt: task.createdAt || new Date().toISOString().split("T")[0],
-        updatedAt: new Date().toISOString().split("T")[0],
+        status: newStatus,
       };
       await updateTask(payload);
     } catch (err) {
       alert("Failed to update status");
-      setStatus(status === "Completed" ? "Pending" : "Completed");
+      setStatus(status === "COMPLETED" ? "PENDING" : "COMPLETED");
     }
   };
 
@@ -67,11 +61,11 @@ export default function TaskCircle(task: Task) {
     }
   };
 
-  const isCompleted = status === "Completed";
+  const isCompleted = status === "COMPLETED";
 
   return (
     <div
-      onClick={handleClick} className={`w-80 h-80 rounded-full border-4 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transform transition-all ${isCompleted ? "bg-green-400 border-green-600 text-black" : "bg-black border-green-400 text-green-300"}`}>
+      onClick={handleUpdateStatusClick} className={`w-80 h-80 rounded-full border-4 flex flex-col items-center justify-center cursor-pointer hover:scale-105 transform transition-all ${isCompleted ? "bg-green-400 border-green-600 text-black" : "bg-black border-green-400 text-green-300"}`}>
       <h2 className="text-2xl font-bold">{task.name}</h2>
       <p className="text-center px-4">{task.description}</p>
       <p className="mt-4 flex mb-5 items-center">
@@ -80,7 +74,7 @@ export default function TaskCircle(task: Task) {
         ) : (
           <RxCrossCircled className="w-6 h-6 mr-2 text-green-400" />
         )}
-        {isCompleted ? "Completed" : "Pending"}
+        {isCompleted ? "COMPLETED" : "PENDING"}
       </p>
       <RiDeleteBin6Line
         onClick={handleDelete}

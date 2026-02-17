@@ -65,6 +65,13 @@ export default function Profile() {
 
   if (loading) return <p>Loading...</p>;
   if (fetchError) return <p className="text-red-500">Error loading user.</p>;
+//   if (fetchError) {
+//   console.error("🚨 Full fetch error:", fetchError);
+//   return <p className="text-red-500">
+//     Error loading user: {fetchError.message}
+//   </p>;
+// }
+
   if (!user) return <p>No user data available.</p>;
 
   return (

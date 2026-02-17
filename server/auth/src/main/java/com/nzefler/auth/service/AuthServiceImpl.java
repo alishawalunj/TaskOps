@@ -40,14 +40,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public JwtAuthResponseDTO login(LoginDTO loginDTO, AuthenticationManager authenticationManager) {
-        System.out.println("Login initiated");
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
         );
         User user = userRepository.findByEmail(loginDTO.getEmail()).orElseThrow(() -> new RuntimeException("User not found after authentication"));
         Long id = user.getId();
         String accessToken = jwtTokenProvider.generateToken(authentication, user.getId());
-        System.out.println("Login completed with token" +  accessToken);
         return new JwtAuthResponseDTO(accessToken,id);
     }
 

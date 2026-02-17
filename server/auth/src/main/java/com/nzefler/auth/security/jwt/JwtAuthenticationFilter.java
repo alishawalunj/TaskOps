@@ -31,6 +31,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         ContentCachingRequestWrapper cachedRequest = new ContentCachingRequestWrapper(request);
         try {
+            String path = request.getRequestURI();
+            if (path.equals("/auth/validate-token")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
             String authHeader = cachedRequest.getHeader("Authorization");
             if (authHeader != null && authHeader.startsWith("Bearer ")) {
                 String jwtToken = authHeader.substring(7);

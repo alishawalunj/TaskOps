@@ -19,8 +19,6 @@ public class AuthClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
         HttpEntity<Void> entity = new HttpEntity<>(headers);
-        System.out.println("Token received in AuthClient: " + token);
-
         try {
             ResponseEntity<UserTokenDTO> response = restTemplate.exchange(
                     authServiceUrl, HttpMethod.POST, entity, UserTokenDTO.class
@@ -28,7 +26,6 @@ public class AuthClient {
             return response.getBody();
         } catch (Exception e) {
             System.err.println("[AuthClient] Exception while validating token: " + e.getMessage());
-            e.printStackTrace();
             return null;
         }
     }
